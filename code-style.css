@@ -1,6 +1,6 @@
 #page_top{
-    width: 50px;
-    height: 50px;
+    width: 75px;
+    height: 75px;
     position: fixed;
     right: 0;
     bottom: 0;
@@ -11,25 +11,28 @@
   #page_top a{
     position: relative;
     display: block;
-    width: 50px;
-    height: 50px;
+    width: 75px;
+    height: 75px;
     text-decoration: none;
   }
   #page_top a::before{
     font-family: 'Font Awesome 5 Free';
     font-weight: 900;
     content: '\f102';
-    font-size: 25px;
+    font-size: 75px;
     color: #fff;
     position: absolute;
-    width: 25px;
-    height: 25px;
-    top: -5px;
+    width: 75px;
+    height: 75px;
+    top: -15px;
     bottom: 0;
     right: 0;
     left: 0;
     margin: auto;
     text-align: center;
+  }
+  a{
+    font-size: 20px;
   }
 code {
     font-family: Menlo, Consolas, 'DejaVu Sans Mono', monospace;
