@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ダイクストラ</title>
+    <link rel="stylesheet" href="code-style.css">
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="option.js"></script>
+</head>
+
+<body>
+    <p style="text-align: left;">
+        <a href="index.html">topページ</a>
+    </p>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.4/css/all.css">
+    <div id="page_top"><a href="#"></a></div>
+    <pre>
+    <code class="prettyprint linenums">
+        struct edge
+        {
+            long long to;
+            long long cost;
+        };
+        typedef pair&lt;long long, long long&gt; P; //P.first:最短距離,P.second:頂点の番号
+        //頂点V個の負閉路なし重み付きグラフGにおける始点sからの最短距離を求める
+        long long V;
+        vector&lt;vector&lt;edge&gt;&gt; G;
+        void dijkstra(vector&lt;long long&gt; &amp;dist, long long s)
+        {
+            //greater&lt;P&gt;によってfirstが小さい順に取り出される
+            priority_queue&lt;P, vector&lt;P&gt;, greater&lt;P&gt;&gt; que;
+            for (long long i = 0; i &lt; V; i++)
+                dist[i] = 1e18;
+            dist[s] = 0;
+            que.push(P(0, s));
+            //queが空になるまで繰り返す
+            while (!que.empty())
+            {
+                P p = que.top();
+                que.pop();
+                long long v = p.second;
+                if (dist[v] &lt; p.first)
+                    continue; //すでに最短距離ならスルー
+                for (long long i = 0; i &lt; G[v].size(); i++)
+                {
+                    edge e = G[v][i];
+                    //更新作業
+                    if (dist[e.to] &gt; dist[v] + e.cost)
+                    {
+                        dist[e.to] = dist[v] + e.cost;
+                        que.push(P(dist[e.to], e.to));
+                    }
+                }
+            }
+        }
+    </code>
+    </pre>
+</body>
+
+</html>
