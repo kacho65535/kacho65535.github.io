@@ -26,6 +26,9 @@ body{
 .main{
     padding:60px 60px;
 }
+.link:visited{
+  color: blue;
+}
 .copy-container h1{
     font-size:50px;
     padding-bottom: 20px;
