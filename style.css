@@ -29,6 +29,9 @@ body{
 .link:visited{
   color: blue;
 }
+.link:hover{
+  color: darkblue;
+}
 .copy-container h1{
     font-size:50px;
     padding-bottom: 20px;
