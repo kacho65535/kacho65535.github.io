@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>二項係数ほか</title>
+    <link rel="stylesheet" href="code-style.css">
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="option.js"></script>
+</head>
+
+<body>
+    <p style="text-align: left;">
+        <a href="index.html">topページ</a>
+    </p>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.4/css/all.css">
+    <div id="page_top"><a href="#"></a></div>
+    <pre>
+    <code class="prettyprint linenums">
+        /*
+二項係数のライブラリ(mod計算)
+・modpow(a,n):a^nを計算
+・COMinit():二項係数のライブラリを使うための下準備をする
+・COM(n,r):nCrを計算(n,r&lt;=3&times;10^6位まで)
+(modinv(a):aの逆元を計算)
+*/
+#define mod 1000000007ll
+
+long long modpow(long long a, long long n)
+{
+    long long res = 1;
+    while (n &gt; 0)
+    {
+        if (n &amp; 1)
+            res = res * a % mod;
+        a = a * a % mod;
+        n &gt;&gt;= 1;
+    }
+    return res;
+}
+long long modinv(long long a)
+{
+    return modpow(a, mod - 2);
+}
+vector&lt;long long&gt; fact(3000001);    //fact[i]=(i!)
+vector&lt;long long&gt; factinv(3000001); //factinv[i]=(i!)^-1
+void COMinit()
+{
+    long long now = 1;
+    fact[0] = 1;
+    factinv[0] = modinv(0);
+    for (long long i = 1; i &lt; 3000001; i++)
+    {
+        now *= i;
+        now %= mod;
+        fact[i] = now;
+        factinv[i] = modinv(now);
+    }
+}
+long long COM(long long n, long long r)
+{
+    if (n &lt; r)
+        return 0;
+    if (n &lt; 0 || r &lt; 0)
+        return 0;
+    if (n == r)
+        return 1;
+    if (r == 0)
+        return 1;
+    long long ans = fact[n];
+    ans *= factinv[r];
+    ans %= mod;
+    ans *= factinv[n - r];
+    ans %= mod;
+    return ans;
+}
+    </code>
+    </pre>
+</body>
+
+</html>
