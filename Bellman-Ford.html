@@ -2,95 +2,111 @@
 <html lang="ja">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ベルマンフォード法</title>
-  <link rel="stylesheet" href="code-style.css">
-  <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="option.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ベルマンフォード法</title>
+    <link rel="stylesheet" href="code-style.css">
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="option.js"></script>
 </head>
 
 <body>
-  <p style="text-align: left;">
-    <a href="index.html">topページ</a>
-  </p>
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.4/css/all.css">
-  <div id="page_top"><a href="#"></a></div>
-  <pre>
+    <p style="text-align: left;">
+        <a href="index.html">topページ</a>
+    </p>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.4/css/all.css">
+    <div id="page_top"><a href="#"></a></div>
+    <pre>
     <code class="prettyprint linenums">
-      //頂点fromから頂点toへと結ぶコストcostの有向辺
-      struct edge
+/*
+&lt;負辺を含む重み付きグラフの最短経路をO(VE)で求める&gt;
+始点vから各頂点への最短距離を求め(経路が存在しなければ1e18)、
+また各頂点につくまでに負閉路が存在するかどうかも調べる
+[使い方]
+1.頂点数V,辺数Eを受け取ってから必要な配列を初期化する
+    cin &gt;&gt; V &gt;&gt; E;
+    side.resize(E);
+    dist.resize(V);
+    find_negative_loop.assign(V, false);
+2.各辺を受け取る(i=0=E-1)
+例）頂点aからbへのコストcの有向辺を張る
+    ford_edge e;
+    e.from = a;
+    e.to = b;
+    e.cost = c;
+    side[i] = e;
+3.始点vからベルマンフォード法を実行
+    bellman_ford(v);
+4.最短経路distと負閉路検出find_negative_loopが更新される
+例）dist[i] = ●● (到達できないときは1e18が格納される)
+    find_negative_loop[i] = false (頂点iに着くまでには負閉路が存在しない)
+*/
+//頂点fromから頂点toへと結ぶコストcostの有向辺
+struct ford_edge
+{
+  long long from;
+  long long cost;
+  long long to;
+};
+long long V, E; //V:頂点数,E:辺数
+vector&lt;ford_edge&gt; side;
+vector&lt;long long&gt; dist;
+vector&lt;bool&gt; find_negative_loop;
+
+void bellman_ford(long long v)
+{
+  for (long long i = 0; i &lt; V; i++)
+    dist[i] = 1e18;
+  dist[v] = 0;
+  long long count = 0;
+  while (&quot;neko&quot;)
+  {
+    count++;
+    bool update = false;
+    //通常の最短経路探索
+    if (count &lt;= V - 1)
+    {
+      for (long long i = 0; i &lt; E; i++)
       {
-        ll from;
-        ll cost;
-        ll to;
-      };
-      ll V, E;
-      vector&lt;edge&gt; side;
-      vec dist;
-      vector&lt;bool&gt; find_negative_loop;
-      /*
-      始点vから各頂点への最短距離を求め(経路が存在しなければ1e18)、
-      また各頂点につくまでに負閉路が存在するかどうかも調べる
+        ford_edge e = side[i];
+        /*
+      現在いる頂点の最短距離がinfでなく、
+      かつ行先の最短距離が(現在いる頂点の最短距離+有向辺のコスト)よりも大きいとき更新
       */
-      void bellman_ford(ll v)
-      {
-        loop(i, V) dist[i] = 1e18;
-        dist[v] = 0;
-        ll count = 0;
-        while (&quot;neko&quot;)
+        if (dist[e.from] != 1e18 &amp;&amp; dist[e.to] &gt; dist[e.from] + e.cost)
         {
-          count++;
-          bool update = false;
-          //通常の最短経路探索
-          if (count &lt;= V - 1)
-          {
-            loop(i, E)
-            {
-              edge e = side[i];
-              /*
-            現在いる頂点の最短距離がinfでなく、
-            かつ行先の最短距離が(現在いる頂点の最短距離+有向辺のコスト)よりも大きいとき更新
-            */
-              if (dist[e.from] != 1e18 &amp;&amp; dist[e.to] &gt; dist[e.from] + e.cost)
-              {
-                dist[e.to] = dist[e.from] + e.cost;
-                update = true; //探索継続
-              }
-            }
-          }
-          //各頂点までに負閉路が存在するかチェック
-          if (count &gt;= V)
-          {
-            loop(i, E)
-            {
-              edge e = side[i];
-              /*
-            現在いる頂点の最短距離がinfでなく、
-            かつ行先の最短距離が(現在いる頂点の最短距離+有向辺のコスト)よりも大きいとき更新
-            +負閉路発見
-            */
-              if (dist[e.from] != 1e18 &amp;&amp; dist[e.to] &gt; dist[e.from] + e.cost)
-              {
-                dist[e.to] = dist[e.from] + e.cost;
-                find_negative_loop[e.to] = true;
-                update = true; //探索継続
-              }
-              //前(from)がtrueなら次(to)もtrue
-              if (find_negative_loop[e.from])
-                find_negative_loop[e.to] = true;
-            }
-          }
-          if ((!update) || count == 2 * V - 1)
-            break; //更新がなくなるか2*V-1回のwhileループが終了すれば終了
+          dist[e.to] = dist[e.from] + e.cost;
+          update = true; //探索継続
         }
       }
-      
-      //main関数
-      side.resize(E);
-      dist.resize(V);
-      find_negative_loop.assign(V, false);
+    }
+    //各頂点までに負閉路が存在するかチェック
+    if (count &gt;= V)
+    {
+      for (long long i = 0; i &lt; E; i++)
+      {
+        ford_edge e = side[i];
+        /*
+      現在いる頂点の最短距離がinfでなく、
+      かつ行先の最短距離が(現在いる頂点の最短距離+有向辺のコスト)よりも大きいとき更新
+      +負閉路発見
+      */
+        if (dist[e.from] != 1e18 &amp;&amp; dist[e.to] &gt; dist[e.from] + e.cost)
+        {
+          dist[e.to] = dist[e.from] + e.cost;
+          find_negative_loop[e.to] = true;
+          update = true; //探索継続
+        }
+        //前(from)がtrueなら次(to)もtrue
+        if (find_negative_loop[e.from])
+          find_negative_loop[e.to] = true;
+      }
+    }
+    if ((!update) || count == 2 * V - 1)
+      break; //更新がなくなるか2*V-1回のwhileループが終了すれば終了
+  }
+}
     </code>
     </pre>
 </body>
