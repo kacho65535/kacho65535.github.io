@@ -4,66 +4,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>kacho65535'spage</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css?family=Alegreya+Sans+SC:300 rel=" stylesheet">
+    <title>BFS</title>
+    <link rel="stylesheet" href="code-style.css">
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="option.js"></script>
 </head>
 
 <body>
-    <div class="header">
-        <div class="header-logo">kacho65535'spage</div>
-    </div>
-    <div class="main">
-        <div class="copy-container">
-            <h1>Thanks for visiting<span>!</span></h1>
-        </div>
-        <div class="contents">
-            <h3>競技プログラミング用ライブラリ</h3>
-            <ul>
-                <li class="al-list">グラフアルゴリズム
-                    <ul>
-                        <li><a class="link" href="Dijkstra.html" target="_blank">★ダイクストラ法</a></li>
-                        <li><a class="link" href="Bellman-Ford.html" target="_blank">ベルマンフォード法</a></li>
-                        <li><a class="link" href="Warshall-Floyd.html" target="_blank">★ワーシャルフロイド法</a></li>
-                        <li><a class="link" href="Kruskal.html" target="_blank">★クラスカル法</a></li>
-                        <li><a class="link" href="BFS.html" target="_blank">★幅優先探索</a></li>
-                    </ul>
-                </li>
-                <li class="al-list">データ構造
-                    <ul>
-                        <li><a class="link" href="Union-Find.html" target="_blank">★Union-Find木</a></li>
-                    </ul>
-                </li>
-                <li class="al-list">数学
-                    <ul>
-                        <li><a class="link" href="Combination.html" target="_blank">★二項係数</a></li>
-                        <li><a class="link" href="Prime_judge.html" target="_blank">★二項係数</a></li>
-                    </ul>
-                </li>
-                <li class="al-list">おまけ
-                    <ul>
-                        <li><a class="link" href="Include-File.html" target="_blank">インクルードファイル一覧(c/c++)</a></li>
-                        <li><a class="link" href="Template.html" target="_blank">テンプレート(★の付いてないアルゴリズムはこれ使ってください)</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-        <div class="contact-form">
-
-        </div>
-
-    </div>
-    <div class="footer">
-        <div class="footer-logo">リンク</div>
-        <div class="footer-list">
-            <ul>
-                <li><a href="https://atcoder.jp/users/kacho65535" target="_blank"><img src="kacho65535.png"
-                            alt="Atcoder" width="64px" height="64px"></a></li>
-                <li><a href="https://github.com/kacho65535" target="_blank"><img src="GitHub-Mark-64px.png" alt="github"
-                            width="64px" height="64px"></a></li>
-            </ul>
-        </div>
-    </div>
+    <p style="text-align: left;">
+        <a href="index.html">topページ</a>
+    </p>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.4/css/all.css">
+    <div id="page_top"><a href="#"></a></div>
+    <pre>
+    <code class="prettyprint linenums">
+/*
+[使い方]
+まず始めに、グラフGを頂点数nで初期化して辺を追加する
+    G.resize(n);
+    G[a].push_back(b);等
+次に最短距離を格納する、長さが頂点数で初期値-1の配列を用意する
+    vector&lt;long long&gt; distance(n,-1);
+最後にXとstartを決めて幅優先探索を実行する(Xの条件が必要ないなら適当にn+1とかを入れる)
+    bfs(distance,10,0);
+配列に最短距離が格納される(到達できないときは-1のまま)
+*/
+vector&lt;vector&lt;long long&gt;&gt; G;
+//始点startからX回以内の移動でたどりつける頂点の最短距離を求める(到達できないなら-1)
+void bfs(vector&lt;long long&gt; &amp;dist, long long X, long long start)
+{
+    queue&lt;long long&gt; que;
+    dist[start] = 0;
+    que.push(start);
+    while (!que.empty())
+    {
+        long long v = que.front();
+        que.pop();
+        if (dist[v] == X)
+            continue;
+        for (auto next_v : G[v])
+        {
+            if (dist[next_v] != -1)
+                continue;
+            dist[next_v] = dist[v] + 1;
+            que.push(next_v);
+        }
+    }
+}
+    </code>
+    </pre>
 </body>
 
 </html>
