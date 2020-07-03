@@ -8,7 +8,22 @@
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css?family=Alegreya+Sans+SC:300 rel=" stylesheet">
 </head>
+<script type="text/javascript">
+<!--
+var day = new Date(document.lastModified);
+var y = day.getFullYear();
+var m = day.getMonth() + 1;
+var d = day.getDate();
 
+var week = new Array("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat");
+var w = week[day.getDay()];
+
+if (m < 10) m = "0" + m;			// 数値が1～9の時には
+if (d < 10) d = "0" + d;			// 0 を追加してそろえる
+
+document.write("Last Update: " + y + "/" + m + "/" + d + " (" + w + ")");
+// -->
+</script>
 <body>
     <div class="header">
         <div class="header-logo">kacho65535'spage</div>
