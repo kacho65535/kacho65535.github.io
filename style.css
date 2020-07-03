@@ -4,6 +4,7 @@ li{
 body{
     font-family: "游ゴシック体", YuGothic, "游ゴシック", "Yu Gothic", "メイリオ", sans-serif;
     font-weight: 500;
+    background-image: url(.gif);
 }
 .header-list li{
     color: white;
