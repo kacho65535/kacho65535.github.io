@@ -9,24 +9,27 @@
     <link href="https://fonts.googleapis.com/css?family=Alegreya+Sans+SC:300 rel=" stylesheet">
 </head>
 
-<body style="background-image: url(back.gif);">                                                                     
+<body style="background-image: url(back.gif);">
     <div class="header">
         <div class="header-logo">kacho65535'spage</div>
     </div>
     <script type="text/javascript">
-            var day = new Date(document.lastModified);
-            var y = day.getFullYear();
-            var m = day.getMonth() + 1;
-            var d = day.getDate();
+        var day = new Date(document.lastModified);
+        var y = day.getFullYear();
+        var m = day.getMonth() + 1;
+        var d = day.getDate();
 
-            var week = new Array("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat");
-            var w = week[day.getDay()];
+        var week = new Array("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat");
+        var w = week[day.getDay()];
 
-            if (m < 10) m = "0" + m;			// 数値が1～9の時には
-            if (d < 10) d = "0" + d;			// 0 を追加してそろえる
+        if (m < 10) m = "0" + m;			// 数値が1～9の時には
+        if (d < 10) d = "0" + d;			// 0 を追加してそろえる
 
-            document.write("Last Update: " + y + "/" + m + "/" + d + " (" + w + ")");
+        document.write("Last Update: " + y + "/" + m + "/" + d + " (" + w + ")");
     </script>
+    <iframe src="news.html" width="600" height="150">
+        インラインフレーム対応ブラウザでご覧いただけます。
+    </iframe>
     <div class="main">
         <div class="copy-container">
             <h1>Thanks for visiting<span>!</span></h1>
@@ -66,7 +69,6 @@
             </ul>
         </div>
         <div class="contact-form">
-
         </div>
 
     </div>
