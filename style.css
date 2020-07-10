@@ -17,13 +17,13 @@
     color: #555;
     font-weight: bold;
     }
-    Menu ul li.current{
+    .Menu ul li.current{
     background-color: #DEEBF7;
     }
-    Menu ul li.current a{
+    .Menu ul li.current a{
     color: #555;
     }
-    Menu ul li:hover{
+    .Menu ul li:hover{
     background-color: #FFF2CC;
     }
 body{
