@@ -13,7 +13,7 @@ body{
 }
 .header{
     background-color: aqua;
-    height: 40px;
+    height: 60px;
 }
 .header-logo{
     color: white;
@@ -25,7 +25,7 @@ body{
     float: left;
 }
 .main{
-    padding:60px 60px;
+    padding:40px 40px;
 }
 .link:visited{
   color: blue;
