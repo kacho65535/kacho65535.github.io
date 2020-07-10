@@ -1,15 +1,15 @@
-    ul[Menu]{
+    ul[class="Menu"]{
     display: table;
     margin: 0 auto;
     padding: 0;
     width: 80%;
     text-align: center;
     }
-    ul[Menu] li{
+    ul[class="Menu"] li{
     display: table-cell;
     min-width: 50px;
     }
-    ul[Menu] li a{
+    ul[class="Menu"] li a{
     display: block;
     width: 100%;
     padding: 10px 0;
@@ -17,13 +17,13 @@
     color: #555;
     font-weight: bold;
     }
-    ul[Menu] li[current]{
+    ul[class="Menu"] li[class="current"]{
     background-color: #DEEBF7;
     }
-    ul[Menu] li[current] a{
+    ul[class="Menu"] li[class="current"] a{
     color: #555;
     }
-    ul[Menu] li:hover{
+    ul[class="Menu"] li:hover{
     background-color: #FFF2CC;
     }
 body{
