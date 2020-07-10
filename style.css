@@ -1,29 +1,21 @@
 li{
     list-style: none;
 }
-    .Menu ul{
+    .Menu{
     display: table;
     margin: 0 auto;
     padding: 0;
     width: 80%;
     text-align: center;
-    }
-    .Menu ul li{
     display: table-cell;
     min-width: 50px;
-    }
-    .Menu ul li a{
     display: block;
     width: 100%;
     padding: 10px 0;
     text-decoration: none;
     color: #2f5167;
     font-weight: bold;
-    }
-    .Menu ul li{
     border: 3px solid #555;
-    }
-    .Menu ul li a{
     color: cornflowerblue;
     }
     .Menu ul li a:hover{
