@@ -20,11 +20,11 @@
     ul[class="Menu"] li[class="current"]{
     background-color: #DEEBF7;
     }
-    ul[class="Menu"] li[class="current"] a{
+    ul[class="Menu"] li a{
     color: #555;
     }
-    ul[class="Menu"] li[class="next"] a{
-        color: aquamarine;
+    ul[class="Menu"] li[class="next"]{
+    background-color: aquamarine;
     }
     ul[class="Menu"] li:hover{
     background-color: #FFF2CC;
