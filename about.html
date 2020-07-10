@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css?family=Alegreya+Sans+SC:300 rel=" stylesheet">
+</head>
+
+<body style="background-image: url(back.gif);">
+    <div class="header">
+        <div class="header-logo">kacho65535'spage</div>
+    </div>
+    <nav>
+        <ul class="Menu">
+            <li class="next"><a href="index.html">Home</a></li>
+            <li class="current"><a href="about.html">About</a></li>
+            <li class="next"><a href="https://kacho65535.hatenablog.com/"" target=" _blank">Blog</a></li>
+        </ul>
+    </nav>
+    <div>
+        <script type="text/javascript">
+            var day = new Date(document.lastModified);
+            var y = day.getFullYear();
+            var m = day.getMonth() + 1;
+            var d = day.getDate();
+
+            var week = new Array("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat");
+            var w = week[day.getDay()];
+
+            if (m < 10) m = "0" + m;			// 数値が1～9の時には
+            if (d < 10) d = "0" + d;			// 0 を追加してそろえる
+
+            document.write("Last Update: " + y + "/" + m + "/" + d + " (" + w + ")");
+        </script>
+    </div>
+    <iframe src="news.html" width="600" height="150">
+        インラインフレーム対応ブラウザでご覧いただけます。
+    </iframe>
+    <div class="main">
+        <div class="contents">
+            <h3>このホームページは？</h3>
+            <h5>
+                競技プログラミングをやっていくなかで、ふとライブラリ置き場を作りたいと思い拙い知識で雑に作ったサイトです。
+                BITやセグ木などの高性能なデータ構造や、フローなどの高度なアルゴリズムなども充実させていきたいですが、
+                管理人が自分で書けないため保留中です。(悲しい)
+                今後コンテンツを追加していきたいですが、これもいつになるかは未定です。
+            </h5>
+        </div>
+</body>
+
+</html>
