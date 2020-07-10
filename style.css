@@ -1,15 +1,15 @@
-    .Menu ul{
+    ul .Menu{
     display: table;
     margin: 0 auto;
     padding: 0;
     width: 80%;
     text-align: center;
     }
-    .Menu ul li{
+    ul .Menu li{
     display: table-cell;
     min-width: 50px;
     }
-    .Menu ul li a{
+    ul .Menu li a{
     display: block;
     width: 100%;
     padding: 10px 0;
@@ -17,13 +17,13 @@
     color: #555;
     font-weight: bold;
     }
-    .Menu ul li .current{
+    ul .Menu li .current{
     background-color: #DEEBF7;
     }
-    .Menu ul li .current a{
+    ul .Menu li .current a{
     color: #555;
     }
-    .Menu ul li:hover{
+    ul .Menu li:hover{
     background-color: #FFF2CC;
     }
 body{
