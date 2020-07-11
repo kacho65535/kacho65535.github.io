@@ -18,7 +18,7 @@
     font-weight: bold;
     }
     ul[class="Menu"] li[class="current"]{
-    background-color: #DEEBF7;
+    background-color: forestgreen;
     }
     ul[class="Menu"] li a{
     color: #555;
@@ -27,7 +27,7 @@
     background-color: aquamarine;
     }
     ul[class="Menu"] li:hover{
-    background-color: #FFF2CC;
+    background-color: cyan;
     }
 body{
     font-family: "游ゴシック体", YuGothic, "游ゴシック", "Yu Gothic", "メイリオ", sans-serif;
