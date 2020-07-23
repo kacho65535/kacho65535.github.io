@@ -9,64 +9,20 @@
     <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="option.js"></script>
+    <script src="//code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script>
+        //共通パーツ読み込み
+        $(function () {
+            $("#Menubar").load("Menubar.html");
+        });
+    </script>
 </head>
 
 <body style="background-image: url(back.gif);">
     <div class="header">
         <div class="header-logo">kacho65535'spage</div>
     </div>
-    <div class="Menu">
-        <nav>
-            <ul class="gnav">
-                <li><a href="index.html">Home</a></li>
-                <li>
-                    <a href="">Codes</a>
-                    <ul>
-                        <li>
-                            <a href="">グラフアルゴリズム</a>
-                            <ul>
-                                <li><a href="Dijkstra.html">ダイクストラ法</a></li>
-                                <li><a href="Bellman-Ford.html">ベルマンフォード法</a></li>
-                                <li><a href="Warshall-Floyd.html">ワーシャルフロイド法</a></li>
-                                <li><a href="Kruskal.html">クラスカル法</a></li>
-                                <li><a href="BFS.html">幅優先探索</a></li>
-                                <li><a href="Topological_Sort.html">トポロジカルソート</a></li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="">データ構造</a>
-                            <ul>
-                                <li><a href="Union-Find.html">Union-Find木</a></li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="">数学</a>
-                            <ul>
-                                <li><a href="Combination.html">二項係数</a></li>
-                                <li><a href="Prime_judge.html">素数判定</a></li>
-                                <li><a href="Geometry.html">幾何ライブラリ</a></li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="">おまけ</a>
-                            <ul>
-                                <li><a href="Include-File.html">インクルードファイル一覧</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-                <li><a href="about.html">About</a></li>
-                <li>
-                    <a href="">Links</a>
-                    <ul>
-                        <li><a href="https://atcoder.jp/users/kacho65535" target="_blank">Atcoder Userpage</a></li>
-                        <li><a href="https://github.com/kacho65535" target="_blank">github</a></li>
-                        <li><a href="https://kacho65535.hatenablog.com/" target="_blank">はてなブログ</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </nav>
-    </div>
+    <div id="Menubar"></div>
 
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.4/css/all.css">
     <div id="page_top"><a href="#"></a></div>
