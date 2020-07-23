@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>重み付きUnion-Find木</title>
+    <link rel="stylesheet" href="code-style.css">
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="option.js"></script>
+    <script src="//code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script>
+        //共通パーツ読み込み
+        $(function () {
+            $("#Menubar").load("Menubar.html");
+        });
+    </script>
+</head>
+
+<body style="background-image: url(back.gif);">
+    <div class="header">
+        <div class="header-logo">kacho65535'spage</div>
+    </div>
+    <div id="Menubar"></div>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.4/css/all.css">
+    <div id="page_top"><a href="#"></a></div>
+    <pre>
+    <code class="prettyprint linenums">
+        /*
+        この重み付きunion_find木で出来ること
+        例)weight_union_find tree(N);などで宣言(N:頂点数)
+        tree.same(x,y):要素xと要素yが同じグループに属するか判定
+        tree.unite(x,y,w):weight(y)=weight(x)+wとなるように木を併合
+        tree.diff(x,y):weight(y)-weight(x)を返す
+        tree.size(x):要素xが属する木の頂点数を返す
+        */
+        struct weight_union_find
+        {
+            vector&lt;long long&gt; par;      //親の番号　
+            vector&lt;long long&gt; rank;     //木の深さ(根のランクは0)
+            vector&lt;long long&gt; siz;      //要素xが根なら木の頂点数を格納する
+            vector&lt;long long&gt; par_diff; //親と子のコストの差
+            //初期化子リストを用いた初期化
+            weight_union_find(long long N) : par(N), rank(N), siz(N), par_diff(N)
+            {
+                for (long long i = 0; i &lt; N; i++)
+                {
+                    par[i] = i;
+                    rank[i] = 0;
+                    siz[i] = 1;
+                    par_diff[i] = 0;
+                }
+            }
+            //要素xが所属する木の根を再帰的に発見する
+            long long root(long long x)
+            {
+                if (par[x] == x)
+                    return x;
+                else
+                {
+                    //経路圧縮+累積和
+                    long long ret = root(par[x]);
+                    par_diff[x] += par_diff[par[x]];
+                    return par[x] = ret;
+                }
+            }
+            //経路圧縮+コストを返す
+            long long weight(long long x)
+            {
+                root(x);
+                return par_diff[x];
+            }
+            //yのコスト-xのコスト
+            long long diff(long long x, long long y)
+            {
+                return weight(y) - weight(x);
+            }
+            //weight(y)=weight(x)+wとなるように木を併合
+            void unite(long long x, long long y, long long w)
+            {
+                long long rx = root(x);
+                long long ry = root(y);
+                w += weight(x);
+                w -= weight(y);
+                if (rx == ry)
+                    return; //同じ木に属してたらそのまま
+                if (rank[rx] &lt; rank[ry])
+                {
+                    swap(rx, ry);
+                    siz[ry] = siz[rx] + siz[ry];
+                    w = -w; //符号反転
+                }
+                else
+                {
+                    siz[rx] = siz[rx] + siz[ry];
+                }
+                if (rank[rx] == rank[ry])
+                    rank[rx]++;
+                par[ry] = rx;
+                par_diff[ry] = w;
+            }
+            //要素xが属する木と要素yが属する木が同じならtrueを返す
+            bool same(long long x, long long y)
+            {
+                return root(x) == root(y);
+            }
+            //要素xが属する木の頂点数を返す
+            long long size(long long x)
+            {
+                return siz[root(x)];
+            }
+        };
+    </code>
+    </pre>
+</body>
+<small>
+    <center>© 2020 kacho65535</center>
+</small>
+
+</html>
