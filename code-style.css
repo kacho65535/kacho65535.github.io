@@ -110,10 +110,9 @@ body{
   font-weight: 500;
   background-image: url(.gif);
 }
-h3{
+.contents h3{
     border-bottom:solid 1px #2f5167;
 }
-
 .header{
   background-color: aqua;
   height: 60px;
