@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>経路復元付きBFS</title>
+    <link rel="stylesheet" href="code-style.css">
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="option.js"></script>
+    <script src="//code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script>
+        //共通パーツ読み込み
+        $(function () {
+            $("#Menubar").load("Menubar.html");
+        });
+    </script>
+</head>
+
+<body style="background-image: url(back.gif);">
+    <div class="header">
+        <div class="header-logo">kacho65535'spage</div>
+    </div>
+    <div id="Menubar"></div>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.4/css/all.css">
+    <div id="page_top"><a href="#"></a></div>
+    <pre>
+    <code class="prettyprint linenums">
+        //経路復元付きBFS
+        //resizeを忘れないようにする
+        //s-&gt;tの経路が存在しないのにrestore関数を呼び出したときの挙動は未定義です
+        vector&lt;vector&lt;long long&gt;&gt; G;
+        vector&lt;long long&gt; preview;
+        //始点startからX回以内の移動でたどりつける頂点の最短距離を求める(到達できないなら-1)
+        void bfs(vector&lt;long long&gt; &amp;dist, long long X, long long start)
+        {
+            queue&lt;long long&gt; que;
+            dist[start] = 0;
+            preview[start] = -1;
+            que.push(start);
+            while (!que.empty())
+            {
+                long long v = que.front();
+                que.pop();
+                if (dist[v] == X)
+                    continue;
+                for (auto next_v : G[v])
+                {
+                    if (dist[next_v] != -1)
+                        continue;
+                    preview[next_v] = v;
+                    dist[next_v] = dist[v] + 1;
+                    que.push(next_v);
+                }
+            }
+        }
+        //BFS後、頂点xへの最短経路のうち1つを復元する(0-indexedかつ0番目からstart-&gt;endの順にindexを格納)
+        vector&lt;long long&gt; restore(long long x)
+        {
+            vector&lt;long long&gt; ret;
+            for (long long i = x; i != -1; i = preview[i])
+            {
+                ret.push_back(i);
+            }
+            reverse(ret.begin(), ret.end());
+            return ret;
+        }
+    </code>
+    </pre>
+</body>
+<small>
+    <center>© 2020 kacho65535</center>
+</small>
+
+</html>
