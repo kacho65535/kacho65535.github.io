@@ -27,23 +27,24 @@
     <div id="page_top"><a href="#"></a></div>
     <pre>
     <code class="prettyprint linenums">
-        //連結グラフなら1回でok
-        //cは0以外ならなんでも
-        bool bipartite_check(const vector&lt;vector&lt;long long&gt;&gt; &amp;G, long long v, long long c)
+long long color[2000000];
+//連結グラフなら1回でok
+//cは0以外ならなんでも
+bool bipartite_check(const vector&lt;vector&lt;long long&gt;&gt; &amp;G, long long v, long long c)
+{
+    color[v] = c;
+    for (long long nv : G[v])
+    {
+        if (color[nv] == c)
+            return false;
+        if (color[nv] == 0)
         {
-            color[v] = c;
-            for (long long nv : G[v])
-            {
-                if (color[nv] == c)
-                    return false;
-                if (color[nv] == 0)
-                {
-                    if (!bipartite_check(G, nv, -c))
-                        return false;
-                }
-            }
-            return true;
+            if (!bipartite_check(G, nv, -c))
+                return false;
         }
+    }
+    return true;
+}
     </code>
     </pre>
 </body>
