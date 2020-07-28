@@ -27,9 +27,9 @@
     <div id="page_top"><a href="#"></a></div>
     <pre>
     <code class="prettyprint linenums">
-      //幾何の問題で入力が多い時に使用
-      #define scan(x) scanf(&quot;%ld&quot;, &amp;x)
-      /*
+//幾何の問題で入力が多い時に使用
+#define scan(x) scanf(&quot;%ld&quot;, &amp;x)
+/*
       [幾何ライブラリ]
       ・円周率
       ・誤差チェッカー
@@ -58,290 +58,290 @@
       ・点の内包判定
       ・凸包
       */
-      //円周率
-      static const double pi = 3.141592653589793;
-      //誤差チェッカー
-      #define EPS (1e-10)
-      #define equals(a, b) (fabs((a) - (b)) &lt; EPS)
-      //点を表わす構造体
-      struct Point
-      {
-      public:
-          double x, y;
-          Point(double _x = 0, double _y = 0) : x(_x), y(_y) {}
-          /*
+//円周率
+static const double pi = 3.141592653589793;
+//誤差チェッカー
+#define EPS (1e-10)
+#define equals(a, b) (fabs((a) - (b)) &lt; EPS)
+//点を表わす構造体
+struct Point
+{
+public:
+    double x, y;
+    Point(double _x = 0, double _y = 0) : x(_x), y(_y) {}
+    /*
           以下ベクトルに対する演算子の定義
           +:ベクトルの足し算
           -:ベクトルの引き算
           *:スカラー倍
           /:スカラーの逆数倍
           */
-          Point operator+(const Point p) { return Point(x + p.x, y + p.y); }
-          Point operator-(const Point p) { return Point(x - p.x, y - p.y); }
-          Point operator*(const double k) { return Point(x * k, y * k); }
-          Point operator/(const double k) { return Point(x / k, y / k); }
-          double abs() { return sqrt(norm()); }
-          double norm() { return x * x + y * y; }
-          //ベクトルの比較(x軸方向のベクトルから比較)
-          bool operator&lt;(const Point &amp;p) const
-          {
-              return x != p.x ? x &lt; p.x : y &lt; p.y;
-          }
-          bool operator&gt;(const Point &amp;p) const
-          {
-              return x != p.x ? x &gt; p.x : y &gt; p.y;
-          }
-          bool operator==(const Point &amp;p) const
-          {
-              return equals(x, p.x) &amp;&amp; equals(y, p.y);
-          }
-          bool operator!=(const Point &amp;p) const
-          {
-              return (!equals(x, p.x)) || (!equals(y, p.y));
-          }
-      };
-      //ベクトルとして扱う場合
-      typedef Point Vector;
-      //線分を表わす構造体
-      struct Segment
-      {
-          Point p1, p2;
-          Segment() = default;
-          Segment(Point _p1, Point _p2) : p1(_p1), p2(_p2) {}
-      };
-      //直線として扱う場合
-      typedef Segment Line;
-      //ベクトルのノルム
-      double norm(Vector a)
-      {
-          return a.x * a.x + a.y * a.y;
-      }
-      //ベクトルの大きさ
-      double abs(Vector a)
-      {
-          return sqrt(norm(a));
-      }
-      //ベクトルの内積
-      double dot(Vector a, Vector b)
-      {
-          return a.x * b.x + a.y * b.y;
-      }
-      //ベクトルの外積
-      double cross(Vector a, Vector b)
-      {
-          return a.x * b.y - a.y * b.x;
-      }
-      //内積≓0かどうかによるベクトルの直交判定(様々な引数で答えられるように複数用意)
-      bool Orthogonal(Vector a, Vector b)
-      {
-          return equals(dot(a, b), 0.0);
-      }
-      bool Orthogonal(Point a1, Point a2, Point b1, Point b2)
-      {
-          return Orthogonal(a1 - a2, b1 - b2);
-      }
-      bool Orthogonal(Segment s1, Segment s2)
-      {
-          return equals(dot(s1.p2 - s1.p1, s2.p2 - s2.p1), 0.0);
-      }
-      //外積≓0かどうかによるベクトルの平行判定(様々な引数で答えられるように複数用意)
-      bool Parallel(Vector a, Vector b)
-      {
-          return equals(cross(a, b), 0.0);
-      }
-      bool Parallel(Point a1, Point a2, Point b1, Point b2)
-      {
-          return Parallel(a1 - a2, b1 - b2);
-      }
-      bool Parallel(Segment s1, Segment s2)
-      {
-          return equals(cross(s1.p2 - s1.p1, s2.p2 - s2.p1), 0.0);
-      }
-      //直線sに対して点ｐから垂線を引いたときの交点x(直線sに対する点pの射影)を求める
-      Point Project(Line s, Point p)
-      {
-          Vector base = s.p2 - s.p1, hypo = p - s.p1;
-          double scalar = (dot(base, hypo) / norm(base));
-          return s.p1 + base * scalar;
-      }
-      //直線sに対して点pと線対称の位置にある点p&#039;を求める
-      Point Reflect(Line s, Point p)
-      {
-          return p + (Project(s, p) - p) * 2.0;
-      }
-      //点と点の距離
-      double GetDist(Point a, Point b)
-      {
-          return abs(a - b);
-      }
-      //直線と点の距離
-      double GetDistLP(Line l, Point p)
-      {
-          return abs(Project(l, p) - p);
-      }
-      //線分と点の距離
-      double GetDistSP(Segment s, Point p)
-      {
-          if (dot(s.p2 - s.p1, p - s.p1) &lt; 0.0)
-              return abs(p - s.p1);
-          if (dot(s.p1 - s.p2, p - s.p2) &lt; 0.0)
-              return abs(p - s.p2);
-          return GetDistLP(s, p);
-      }
-      //Counter-Clockwise(AOJ:CGL_1_Cより)
-      static const int COUNTER_CLOCKWISE = 1; //反時計回り
-      static const int CLOCKWISE = -1;        //時計回り
-      static const int ONLINE_BACK = 2;       //線分の後ろにある
-      static const int ONLINE_FRONT = -2;     //線分の前にある
-      static const int ON_SEGMENT = 0;        //線分上にある
-      //線分p0p1と点p2の位置関係を求める
-      int CCW(Point p0, Point p1, Point p2)
-      {
-          Vector a = p1 - p0, b = p2 - p0; //a:p0-&gt;p1,b:p0-&gt;p2
-          if (cross(a, b) &gt; EPS)
-              return COUNTER_CLOCKWISE; //外積が正なら反時計回り(sin&theta;&gt;0)
-          if (cross(a, b) &lt; -EPS)
-              return CLOCKWISE; //外積が負なら時計回り(sin&theta;&lt;0)
-          if (dot(a, b) &lt; -EPS)
-              return ONLINE_BACK; //外積が0かつ内積が負(cos&theta;&lt;0)
-          if (a.norm() &lt; b.norm())
-              return ONLINE_FRONT; //p2がp0p1に含まれないときp0p2=p0p1+p1p2となり|a|^2&lt;|b|^2が成立
-          return ON_SEGMENT;       //最後にp0p2p1が残る
-      }
-      //2本の線分の交差判定(点と線分で2種類用意)
-      bool Intersect(Point p1, Point p2, Point p3, Point p4)
-      {
-          return (CCW(p1, p2, p3) * CCW(p1, p2, p4) &lt;= 0 &amp;&amp; CCW(p3, p4, p1) * CCW(p3, p4, p2) &lt;= 0);
-      }
-      bool Intersect(Segment s1, Segment s2)
-      {
-          return Intersect(s1.p1, s1.p2, s2.p1, s2.p2);
-      }
-      //線分と線分の距離
-      double GetDist(Segment s1, Segment s2)
-      {
-          //線分が交差していた場合、距離は0.0
-          if (Intersect(s1, s2))
-              return 0.0;
-          return min(min(GetDistSP(s1, s2.p1), GetDistSP(s1, s2.p2)), min(GetDistSP(s2, s1.p1), GetDistSP(s2, s1.p2)));
-      }
-      //交差する2本の線分の交点
-      Point CrossPoint(Segment s1, Segment s2)
-      {
-          if (!Intersect(s1, s2))
-              cout &lt;&lt; &quot;2本の線分は交点を持たない&quot; &lt;&lt; endl; //デバッグ用
-          Vector base = s2.p2 - s2.p1, hypo1 = s1.p1 - s2.p1, hypo2 = s1.p2 - s2.p1;
-          double d1 = fabs(cross(base, hypo1)) / abs(base);
-          double d2 = fabs(cross(base, hypo2)) / abs(base);
-          Point x = s1.p1 + (s1.p2 - s1.p1) * (d1 / (d1 + d2));
-          return x;
-      }
-      //座標cを中心とする半径rの円を表わす構造体
-      struct Circle
-      {
-      public:
-          Point c;
-          double r;
-          Circle(Point _c, double _r) : c(_c), r(_r) {}
-      };
-      //円と直線の交点の組(接点なら同じものを2つ)を求める(小さい順に入れる)
-      pair&lt;Point, Point&gt; CrossPoints(Circle c, Line l)
-      {
-          if (GetDistLP(l, c.c) - c.r &gt; EPS)
-              cout &lt;&lt; &quot;円と直線は交点を持たない&quot; &lt;&lt; endl;      //デバッグ用
-          Point mid = Project(l, c.c);                         //交点の中間
-          Vector e = (l.p2 - l.p1) / abs(l.p2 - l.p1);         //直線lの単位ベクトル
-          double halfdist = sqrt(c.r * c.r - norm(c.c - mid)); //三平方の定理で2交点の距離の半分を求める
-          Point s = mid + e * halfdist, t = mid - e * halfdist;
-          if (s &gt; t)
-              swap(s, t);
-          return make_pair(s, t); //s&lt;tの順
-      }
-      //ベクトルの角度
-      double arg(Vector p)
-      {
-          return atan2(p.y, p.x);
-      }
-      //極座標から直交座標に変換
-      Vector polar(double r, double theta)
-      {
-          return Point(cos(theta) * r, sin(theta) * r);
-      }
-      //円と円の交点の組(接点なら同じものを2つ)を求める(小さい順に入れる)
-      pair&lt;Point, Point&gt; CrossPoints(Circle c1, Circle c2)
-      {
-          if (GetDist(c1.c, c2.c) - (c1.r + c2.r) &gt; EPS)
-              cout &lt;&lt; &quot;2円は交点を持たない&quot; &lt;&lt; endl;                             //デバッグ用
-          double d = abs(c2.c - c1.c);                                           //中心間距離
-          double a = acos((d * d + c1.r * c1.r - c2.r * c2.r) / (2 * d * c1.r)); //余弦定理+arccos
-          double t = arg(c2.c - c1.c);                                           //偏角
-          Point p1 = c1.c + polar(c1.r, t + a), p2 = c1.c + polar(c1.r, t - a);
-          if (p1 &gt; p2)
-              swap(p1, p2);
-          return make_pair(p1, p2);
-      }
-      //多角形は点の列として扱う
-      typedef vector&lt;Point&gt; Polygon;
-      //点の内包判定
-      /*
+    Point operator+(const Point p) { return Point(x + p.x, y + p.y); }
+    Point operator-(const Point p) { return Point(x - p.x, y - p.y); }
+    Point operator*(const double k) { return Point(x * k, y * k); }
+    Point operator/(const double k) { return Point(x / k, y / k); }
+    double abs() { return sqrt(norm()); }
+    double norm() { return x * x + y * y; }
+    //ベクトルの比較(x軸方向のベクトルから比較)
+    bool operator&lt;(const Point &amp;p) const
+    {
+        return x != p.x ? x &lt; p.x : y &lt; p.y;
+    }
+    bool operator&gt;(const Point &amp;p) const
+    {
+        return x != p.x ? x &gt; p.x : y &gt; p.y;
+    }
+    bool operator==(const Point &amp;p) const
+    {
+        return equals(x, p.x) &amp;&amp; equals(y, p.y);
+    }
+    bool operator!=(const Point &amp;p) const
+    {
+        return (!equals(x, p.x)) || (!equals(y, p.y));
+    }
+};
+//ベクトルとして扱う場合
+typedef Point Vector;
+//線分を表わす構造体
+struct Segment
+{
+    Point p1, p2;
+    Segment() = default;
+    Segment(Point _p1, Point _p2) : p1(_p1), p2(_p2) {}
+};
+//直線として扱う場合
+typedef Segment Line;
+//ベクトルのノルム
+double norm(Vector a)
+{
+    return a.x * a.x + a.y * a.y;
+}
+//ベクトルの大きさ
+double abs(Vector a)
+{
+    return sqrt(norm(a));
+}
+//ベクトルの内積
+double dot(Vector a, Vector b)
+{
+    return a.x * b.x + a.y * b.y;
+}
+//ベクトルの外積
+double cross(Vector a, Vector b)
+{
+    return a.x * b.y - a.y * b.x;
+}
+//内積≓0かどうかによるベクトルの直交判定(様々な引数で答えられるように複数用意)
+bool Orthogonal(Vector a, Vector b)
+{
+    return equals(dot(a, b), 0.0);
+}
+bool Orthogonal(Point a1, Point a2, Point b1, Point b2)
+{
+    return Orthogonal(a1 - a2, b1 - b2);
+}
+bool Orthogonal(Segment s1, Segment s2)
+{
+    return equals(dot(s1.p2 - s1.p1, s2.p2 - s2.p1), 0.0);
+}
+//外積≓0かどうかによるベクトルの平行判定(様々な引数で答えられるように複数用意)
+bool Parallel(Vector a, Vector b)
+{
+    return equals(cross(a, b), 0.0);
+}
+bool Parallel(Point a1, Point a2, Point b1, Point b2)
+{
+    return Parallel(a1 - a2, b1 - b2);
+}
+bool Parallel(Segment s1, Segment s2)
+{
+    return equals(cross(s1.p2 - s1.p1, s2.p2 - s2.p1), 0.0);
+}
+//直線sに対して点ｐから垂線を引いたときの交点x(直線sに対する点pの射影)を求める
+Point Project(Line s, Point p)
+{
+    Vector base = s.p2 - s.p1, hypo = p - s.p1;
+    double scalar = (dot(base, hypo) / norm(base));
+    return s.p1 + base * scalar;
+}
+//直線sに対して点pと線対称の位置にある点p&#039;を求める
+Point Reflect(Line s, Point p)
+{
+    return p + (Project(s, p) - p) * 2.0;
+}
+//点と点の距離
+double GetDist(Point a, Point b)
+{
+    return abs(a - b);
+}
+//直線と点の距離
+double GetDistLP(Line l, Point p)
+{
+    return abs(Project(l, p) - p);
+}
+//線分と点の距離
+double GetDistSP(Segment s, Point p)
+{
+    if (dot(s.p2 - s.p1, p - s.p1) &lt; 0.0)
+        return abs(p - s.p1);
+    if (dot(s.p1 - s.p2, p - s.p2) &lt; 0.0)
+        return abs(p - s.p2);
+    return GetDistLP(s, p);
+}
+//Counter-Clockwise(AOJ:CGL_1_Cより)
+static const int COUNTER_CLOCKWISE = 1; //反時計回り
+static const int CLOCKWISE = -1;        //時計回り
+static const int ONLINE_BACK = 2;       //線分の後ろにある
+static const int ONLINE_FRONT = -2;     //線分の前にある
+static const int ON_SEGMENT = 0;        //線分上にある
+//線分p0p1と点p2の位置関係を求める
+int CCW(Point p0, Point p1, Point p2)
+{
+    Vector a = p1 - p0, b = p2 - p0; //a:p0-&gt;p1,b:p0-&gt;p2
+    if (cross(a, b) &gt; EPS)
+        return COUNTER_CLOCKWISE; //外積が正なら反時計回り(sin&theta;&gt;0)
+    if (cross(a, b) &lt; -EPS)
+        return CLOCKWISE; //外積が負なら時計回り(sin&theta;&lt;0)
+    if (dot(a, b) &lt; -EPS)
+        return ONLINE_BACK; //外積が0かつ内積が負(cos&theta;&lt;0)
+    if (a.norm() &lt; b.norm())
+        return ONLINE_FRONT; //p2がp0p1に含まれないときp0p2=p0p1+p1p2となり|a|^2&lt;|b|^2が成立
+    return ON_SEGMENT;       //最後にp0p2p1が残る
+}
+//2本の線分の交差判定(点と線分で2種類用意)
+bool Intersect(Point p1, Point p2, Point p3, Point p4)
+{
+    return (CCW(p1, p2, p3) * CCW(p1, p2, p4) &lt;= 0 &amp;&amp; CCW(p3, p4, p1) * CCW(p3, p4, p2) &lt;= 0);
+}
+bool Intersect(Segment s1, Segment s2)
+{
+    return Intersect(s1.p1, s1.p2, s2.p1, s2.p2);
+}
+//線分と線分の距離
+double GetDist(Segment s1, Segment s2)
+{
+    //線分が交差していた場合、距離は0.0
+    if (Intersect(s1, s2))
+        return 0.0;
+    return min(min(GetDistSP(s1, s2.p1), GetDistSP(s1, s2.p2)), min(GetDistSP(s2, s1.p1), GetDistSP(s2, s1.p2)));
+}
+//交差する2本の線分の交点
+Point CrossPoint(Segment s1, Segment s2)
+{
+    if (!Intersect(s1, s2))
+        cout &lt;&lt; &quot;2本の線分は交点を持たない&quot; &lt;&lt; endl; //デバッグ用
+    Vector base = s2.p2 - s2.p1, hypo1 = s1.p1 - s2.p1, hypo2 = s1.p2 - s2.p1;
+    double d1 = fabs(cross(base, hypo1)) / abs(base);
+    double d2 = fabs(cross(base, hypo2)) / abs(base);
+    Point x = s1.p1 + (s1.p2 - s1.p1) * (d1 / (d1 + d2));
+    return x;
+}
+//座標cを中心とする半径rの円を表わす構造体
+struct Circle
+{
+public:
+    Point c;
+    double r;
+    Circle(Point _c, double _r) : c(_c), r(_r) {}
+};
+//円と直線の交点の組(接点なら同じものを2つ)を求める(小さい順に入れる)
+pair&lt;Point, Point&gt; CrossPoints(Circle c, Line l)
+{
+    if (GetDistLP(l, c.c) - c.r &gt; EPS)
+        cout &lt;&lt; &quot;円と直線は交点を持たない&quot; &lt;&lt; endl;      //デバッグ用
+    Point mid = Project(l, c.c);                         //交点の中間
+    Vector e = (l.p2 - l.p1) / abs(l.p2 - l.p1);         //直線lの単位ベクトル
+    double halfdist = sqrt(c.r * c.r - norm(c.c - mid)); //三平方の定理で2交点の距離の半分を求める
+    Point s = mid + e * halfdist, t = mid - e * halfdist;
+    if (s &gt; t)
+        swap(s, t);
+    return make_pair(s, t); //s&lt;tの順
+}
+//ベクトルの角度
+double arg(Vector p)
+{
+    return atan2(p.y, p.x);
+}
+//極座標から直交座標に変換
+Vector polar(double r, double theta)
+{
+    return Point(cos(theta) * r, sin(theta) * r);
+}
+//円と円の交点の組(接点なら同じものを2つ)を求める(小さい順に入れる)
+pair&lt;Point, Point&gt; CrossPoints(Circle c1, Circle c2)
+{
+    if (GetDist(c1.c, c2.c) - (c1.r + c2.r) &gt; EPS)
+        cout &lt;&lt; &quot;2円は交点を持たない&quot; &lt;&lt; endl;                             //デバッグ用
+    double d = abs(c2.c - c1.c);                                           //中心間距離
+    double a = acos((d * d + c1.r * c1.r - c2.r * c2.r) / (2 * d * c1.r)); //余弦定理+arccos
+    double t = arg(c2.c - c1.c);                                           //偏角
+    Point p1 = c1.c + polar(c1.r, t + a), p2 = c1.c + polar(c1.r, t - a);
+    if (p1 &gt; p2)
+        swap(p1, p2);
+    return make_pair(p1, p2);
+}
+//多角形は点の列として扱う
+typedef vector&lt;Point&gt; Polygon;
+//点の内包判定
+/*
           IN 2
           ON 1
           OUT 0
       */
-      int Contain(Polygon g, Point p)
-      {
-          int n = g.size();
-          bool x = false;
-          for (int i = 0; i &lt; n; i++)
-          {
-              Vector a = g[i] - p;           //p-&gt;g[i]
-              Vector b = g[(i + 1) % n] - p; //p-&gt;g[i+1] 但しn-1の次は0
-              if (abs(cross(a, b)) &lt; EPS &amp;&amp; dot(a, b) &lt; EPS)
-                  return 1; //外積の大きさが0で内積0以下なら線分上
-              if (a.y &gt; b.y)
-                  swap(a, b);
-              if (a.y &lt; EPS &amp;&amp; EPS &lt; b.y &amp;&amp; cross(a, b) &gt; EPS)
-                  x = (!x); //xの真偽値を反転
-          }
-          return (x ? 2 : 0); //xが真なら2(内包)を、偽なら0(外)を返す
-      }
-      //凸包を求める
-      Polygon AndrewScan(Polygon s)
-      {
-          Polygon u, l;
-          if (s.size() &lt; 3)
-              return s;
-          sort(s.begin(), s.end()); //x座標(y座標)の順でソート
-          //xが小さい順に2つ追加
-          u.push_back(s[0]);
-          u.push_back(s[1]);
-          //xが大きい順に2つ追加
-          l.push_back(s[s.size() - 1]);
-          l.push_back(s[s.size() - 2]);
-          //凸包の上部生成
-          for (int i = 2; i &lt; s.size(); i++)
-          {
-              for (int n = u.size(); n &gt;= 2 &amp;&amp; CCW(u[n - 2], u[n - 1], s[i]) == COUNTER_CLOCKWISE; n--)
-              {
-                  u.pop_back(); //凸にならなかったら頂点を削除
-              }
-              u.push_back(s[i]);
-          }
-          //凸包の下部生成
-          for (int i = s.size() - 3; i &gt;= 0; i--)
-          {
-              for (int n = l.size(); n &gt;= 2 &amp;&amp; CCW(l[n - 2], l[n - 1], s[i]) == COUNTER_CLOCKWISE; n--)
-              {
-                  l.pop_back();
-              }
-              l.push_back(s[i]);
-          }
-          //反時計回りになるように凸包の点列を生成
-          reverse(l.begin(), l.end());
-          for (int i = u.size() - 2; i &gt;= 1; i--)
-              l.push_back(u[i]);
-          return l;
-      }
+int Contain(Polygon g, Point p)
+{
+    int n = g.size();
+    bool x = false;
+    for (int i = 0; i &lt; n; i++)
+    {
+        Vector a = g[i] - p;           //p-&gt;g[i]
+        Vector b = g[(i + 1) % n] - p; //p-&gt;g[i+1] 但しn-1の次は0
+        if (abs(cross(a, b)) &lt; EPS &amp;&amp; dot(a, b) &lt; EPS)
+            return 1; //外積の大きさが0で内積0以下なら線分上
+        if (a.y &gt; b.y)
+            swap(a, b);
+        if (a.y &lt; EPS &amp;&amp; EPS &lt; b.y &amp;&amp; cross(a, b) &gt; EPS)
+            x = (!x); //xの真偽値を反転
+    }
+    return (x ? 2 : 0); //xが真なら2(内包)を、偽なら0(外)を返す
+}
+//凸包を求める
+Polygon AndrewScan(Polygon s)
+{
+    Polygon u, l;
+    if (s.size() &lt; 3)
+        return s;
+    sort(s.begin(), s.end()); //x座標(y座標)の順でソート
+    //xが小さい順に2つ追加
+    u.push_back(s[0]);
+    u.push_back(s[1]);
+    //xが大きい順に2つ追加
+    l.push_back(s[s.size() - 1]);
+    l.push_back(s[s.size() - 2]);
+    //凸包の上部生成
+    for (int i = 2; i &lt; s.size(); i++)
+    {
+        for (int n = u.size(); n &gt;= 2 &amp;&amp; CCW(u[n - 2], u[n - 1], s[i]) == COUNTER_CLOCKWISE; n--)
+        {
+            u.pop_back(); //凸にならなかったら頂点を削除
+        }
+        u.push_back(s[i]);
+    }
+    //凸包の下部生成
+    for (int i = s.size() - 3; i &gt;= 0; i--)
+    {
+        for (int n = l.size(); n &gt;= 2 &amp;&amp; CCW(l[n - 2], l[n - 1], s[i]) == COUNTER_CLOCKWISE; n--)
+        {
+            l.pop_back();
+        }
+        l.push_back(s[i]);
+    }
+    //反時計回りになるように凸包の点列を生成
+    reverse(l.begin(), l.end());
+    for (int i = u.size() - 2; i &gt;= 1; i--)
+        l.push_back(u[i]);
+    return l;
+}
     </code>
     </pre>
 </body>
