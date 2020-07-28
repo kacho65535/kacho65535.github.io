@@ -4,155 +4,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>テンプレート</title>
+    <title>競プロテンプレート</title>
     <link rel="stylesheet" href="code-style.css">
     <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="option.js"></script>
+    <script src="//code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script>
+        //共通パーツ読み込み
+        $(function () {
+            $("#Menubar").load("Menubar.html");
+        });
+    </script>
 </head>
 
-<body>
-    <p style="text-align: left;">
-        <a href="index.html">topページ</a>
-    </p>
+<body style="background-image: url(back.gif);">
+    <div class="header">
+        <div class="header-logo">kacho65535'spage</div>
+    </div>
+    <div id="Menubar"></div>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.4/css/all.css">
     <div id="page_top"><a href="#"></a></div>
     <pre>
     <code class="prettyprint linenums">
-        #include &lt;bits/stdc++.h&gt;
-        #define _GLIBCXX_DEBUG
-        using namespace std;
-        using ll = long long;
-        using vec = vector&lt;ll&gt;;
-        using vect = vector&lt;double&gt;;
-        using Graph = vector&lt;vector&lt;ll&gt;&gt;;
-        #define loop(i, n) for (ll i = 0; i &lt; n; i++)
-        #define Loop(i, m, n) for (ll i = m; i &lt; n; i++)
-        #define pool(i, n) for (ll i = n; i &gt;= 0; i--)
-        #define Pool(i, m, n) for (ll i = n; i &gt;= m; i--)
-        #define mod 1000000007ll;
-        #define setbit bitset&lt;8&gt;
-        #define flagcount __builtin_popcount
-        #define flag(x) (1 &lt;&lt; x)
-        #define flagadd(bit, x) bit |= flag(x)
-        #define flagpop(bit, x) bit &amp;= ~flag(x)
-        #define flagon(bit, i) bit &amp;flag(i)
-        #define flagoff(bit, i) !(bit &amp; (1 &lt;&lt; i))
-        #define all(v) v.begin(), v.end()
-        #define low2way(v, x) lower_bound(all(v), x)
-        #define high2way(v, x) upper_bound(all(v), x)
-        #define count2way(v, x) high2way(v, x) - low2way(v, x)
-        #define lower(v, x) low2way(v, x) - v.begin()       //1番左が0、もし見つから無いならｎを出力
-        #define higher(v, x) high2way(v, x) - v.begin() - 1 //1番左が0、もし見つからないならn-1を出力（注意）
-        #define putout(a) cout &lt;&lt; a &lt;&lt; endl
-        #define putout2(a, b) \
-            putout(a);        \
-            putout(b)
-        #define putout3(a, b, c) \
-            putout(a);           \
-            putout(b);           \
-            putout(c)
-        #define putout4(a, b, c, d) \
-            putout(a);              \
-            putout(b);              \
-            putout(c);              \
-            putout(d)
-        #define putout5(a, b, c, d, e) \
-            putout(a);                 \
-            putout(b);                 \
-            putout(c);                 \
-            putout(d);                 \
-            putout(e)
-        #define Gput(a, b) G[a].push_back(b)
-        #define cin1(a) cin &gt;&gt; a
-        #define cin2(a, b) cin &gt;&gt; a &gt;&gt; b
-        #define cin3(a, b, c) cin &gt;&gt; a &gt;&gt; b &gt;&gt; c
-        #define cin4(a, b, c, d) cin &gt;&gt; a &gt;&gt; b &gt;&gt; c &gt;&gt; d
-        #define cin5(a, b, c, d, e) cin &gt;&gt; a &gt;&gt; b &gt;&gt; c &gt;&gt; d &gt;&gt; e
-        #define sum(v) accumulate(all(v), 0ll)
-        #define gcd(x, y) __gcd(x, y)
-        ll ctoi(char c)
+#include &lt;bits/stdc++.h&gt;
+#define _GLIBCXX_DEBUG
+using namespace std;
+using ll = long long;
+using vec = vector&lt;ll&gt;;
+using vect = vector&lt;double&gt;;
+using Graph = vector&lt;vector&lt;ll&gt;&gt;;
+#define loop(i, n) for (ll i = 0; i &lt; n; i++)
+#define Loop(i, m, n) for (ll i = m; i &lt; n; i++)
+#define pool(i, n) for (ll i = n; i &gt;= 0; i--)
+#define Pool(i, m, n) for (ll i = n; i &gt;= m; i--)
+#define mod 1000000007ll
+//#define mod 998244353ll
+#define flagcount __builtin_popcount
+#define flag(x) (1ll &lt;&lt; x)
+#define flagadd(bit, x) bit |= flag(x)
+#define flagpop(bit, x) bit &amp;= ~flag(x)
+#define flagon(bit, i) bit &amp;flag(i)
+#define flagoff(bit, i) !(bit &amp; (1ll &lt;&lt; i))
+#define all(v) v.begin(), v.end()
+#define low2way(v, x) lower_bound(all(v), x)
+#define high2way(v, x) upper_bound(all(v), x)
+#define idx_lower(v, x) (distance(v.begin(), low2way(v, x)))  //配列vでx未満の要素数を返す
+#define idx_upper(v, x) (distance(v.begin(), high2way(v, x))) //配列vでx以下の要素数を返す
+#define idx_lower2(v, x) (v.size() - idx_lower(v, x))         //配列vでx以上の要素数を返す
+#define idx_upper2(v, x) (v.size() - idx_upper(v, x))         //配列vでxより大きい要素の数を返す
+#define putout(a) cout &lt;&lt; a &lt;&lt; endl
+#define Sum(v) accumulate(all(v), 0ll)
+#define gcd(x, y) __gcd(x, y)
+ll ctoi(char c)
+{
+    if (c &gt;= &#039;0&#039; &amp;&amp; c &lt;= &#039;9&#039;)
+    {
+        return c - &#039;0&#039;;
+    }
+    return -1;
+}
+template &lt;typename T&gt;
+T lcm(T x, T y)
+{
+    T z = gcd(x, y);
+    return x * y / z;
+}
+template &lt;typename T&gt;
+bool primejudge(T n)
+{
+    if (n &lt; 2)
+        return false;
+    else if (n == 2)
+        return true;
+    else if (n % 2 == 0)
+        return false;
+    double sqrtn = sqrt(n);
+    for (T i = 3; i &lt; sqrtn + 1; i++)
+    {
+        if (n % i == 0)
         {
-            if (c &gt;= &#039;0&#039; &amp;&amp; c &lt;= &#039;9&#039;)
-            {
-                return c - &#039;0&#039;;
-            }
-            return 0;
+            return false;
         }
-        template &lt;typename T&gt;
-        T lcm(T x, T y)
-        {
-            T z = gcd(x, y);
-            return x * y / z;
-        }
-        
-        template &lt;typename T&gt;
-        T primejudge(T n)
-        {
-            if (n &lt; 2)
-                return 0;
-            else if (n == 2)
-                return 1;
-            else if (n % 2 == 0)
-                return 0;
-            double sqrtn = sqrt(n);
-            Loop(i, 3, sqrtn + 1)
-            {
-                if (n % i == 0)
-                {
-                    return 0;
-                }
-                i++;
-            }
-            return 1;
-        }
-        template &lt;typename T&gt;
-        T modinv(T a, T m)
-        {
-            T b = m, u = 1, v = 0;
-            while (b)
-            {
-                T t = a / b;
-                a -= t * b;
-                swap(a, b);
-                u -= t * v;
-                swap(u, v);
-            }
-            u %= m;
-            if (u &lt; 0)
-                u += m;
-            return u;
-        }
-        //場合によって使い分ける
-        //const ll dx[4]={1,0,-1,0};
-        //const ll dy[4]={0,1,0,-1};
-        const ll dx[8] = {1, 1, 0, -1, -1, -1, 0, 1};
-        const ll dy[8] = {0, 1, 1, 1, 0, -1, -1, -1};
-        //多次元配列の宣言法
-        //vector&lt;vector&lt;ll&gt;&gt; field(h, vector&lt;ll&gt;(w));
-        template &lt;class T&gt;
-        inline void chmax(T &amp;a, T b)
-        {
-            if (a &lt; b)
-                a = b;
-        }
-        template &lt;class T&gt;
-        inline void chmin(T &amp;a, T b)
-        {
-            if (a &gt; b)
-                a = b;
-        }
-        /*
-        ライブラリをここに置いてコメントを削除
-        */
-        
-        int main()
-        {
-        
-            return 0;
-        
+        i++;
+    }
+    return true;
+}
+//場合によって使い分ける
+//const ll dx[4]={1,0,-1,0};
+//const ll dy[4]={0,1,0,-1};
+const ll dx[8] = {1, 1, 0, -1, -1, -1, 0, 1};
+const ll dy[8] = {0, 1, 1, 1, 0, -1, -1, -1};
+//2次元配列の宣言
+//vector&lt;vector&lt;ll&gt;&gt; field(h, vector&lt;ll&gt;(w));
+
+int main()
+{
+    cout &lt;&lt; fixed &lt;&lt; setprecision(20);
+    return 0;
+}
     </code>
     </pre>
 </body>
+<small>
+    <center>© 2020 kacho65535</center>
+</small>
 
 </html>
