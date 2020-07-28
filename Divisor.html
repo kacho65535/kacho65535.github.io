@@ -29,10 +29,11 @@
     <code class="prettyprint linenums">
 //nの約数を小さい順に列挙した配列を返す
 //計算量:O(&radic;n)
-vector&lt;long long&gt; divisor(long long n)
+template &lt;typename T&gt;
+vector&lt;T&gt; divisor(T n)
 {
-    vector&lt;long long&gt; ret1, ret2;
-    for (long long i = 1; i * i &lt;= n; i++)
+    vector&lt;T&gt; ret1, ret2;
+    for (T i = 1; i * i &lt;= n; i++)
     {
         if (n % i == 0)
         {
@@ -41,8 +42,8 @@ vector&lt;long long&gt; divisor(long long n)
                 ret2.push_back(n / i);
         }
     }
-    long long siz = ret2.size();
-    for (long long i = (siz - 1); i &gt;= 0; i--)
+    T siz = ret2.size();
+    for (T i = (siz - 1); i &gt;= 0; i--)
     {
         ret1.push_back(ret2[i]);
     }
