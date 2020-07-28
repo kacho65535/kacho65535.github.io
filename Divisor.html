@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>約数列挙</title>
+    <link rel="stylesheet" href="code-style.css">
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="option.js"></script>
+    <script src="//code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script>
+        //共通パーツ読み込み
+        $(function () {
+            $("#Menubar").load("Menubar.html");
+        });
+    </script>
+</head>
+
+<body style="background-image: url(back.gif);">
+    <div class="header">
+        <div class="header-logo">kacho65535'spage</div>
+    </div>
+    <div id="Menubar"></div>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.4/css/all.css">
+    <div id="page_top"><a href="#"></a></div>
+    <pre>
+    <code class="prettyprint linenums">
+//nの約数を小さい順に列挙した配列を返す
+//計算量:O(&radic;n)
+vector&lt;long long&gt; divisor(long long n)
+{
+    vector&lt;long long&gt; ret1, ret2;
+    for (long long i = 1; i * i &lt;= n; i++)
+    {
+        if (n % i == 0)
+        {
+            ret1.push_back(i);
+            if (i * i != n)
+                ret2.push_back(n / i);
+        }
+    }
+    long long siz = ret2.size();
+    for (long long i = (siz - 1); i &gt;= 0; i--)
+    {
+        ret1.push_back(ret2[i]);
+    }
+    return (ret1);
+}
+    </code>
+    </pre>
+</body>
+<small>
+    <center>© 2020 kacho65535</center>
+</small>
+
+</html>
