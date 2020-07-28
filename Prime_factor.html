@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>素因数分解</title>
+    <link rel="stylesheet" href="code-style.css">
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="option.js"></script>
+    <script src="//code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script>
+        //共通パーツ読み込み
+        $(function () {
+            $("#Menubar").load("Menubar.html");
+        });
+    </script>
+</head>
+
+<body style="background-image: url(back.gif);">
+    <div class="header">
+        <div class="header-logo">kacho65535'spage</div>
+    </div>
+    <div id="Menubar"></div>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.4/css/all.css">
+    <div id="page_top"><a href="#"></a></div>
+    <pre>
+    <code class="prettyprint linenums">
+/*
+nを素因数分解した結果を返す
+ex)
+720=(2^4)*(3^2)*(5^1)
+[(2,4),(3,2),(5,1)]
+*/
+template &lt;typename T&gt;
+vector&lt;pair&lt;T, T&gt;&gt; prime_factor(T n)
+{
+    vector&lt;pair&lt;T, T&gt;&gt; ret;
+    T now = n;
+    for (T i = 2; i * i &lt;= n; i++)
+    {
+        T count = 0;
+        while (now % i == 0)
+        {
+            now /= i;
+            count++;
+        }
+        if (count != 0)
+            ret.push_back(make_pair(i, count));
+    }
+    if (now != 1)
+        ret.push_back(make_pair(now, 1));
+    return ret;
+}
+    </code>
+    </pre>
+</body>
+<small>
+    <center>© 2020 kacho65535</center>
+</small>
+
+</html>
