@@ -1,87 +1,59 @@
-<!DOCTYPE html>
-<html lang="ja">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>kacho65535'spage</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css?family=Alegreya+Sans+SC:300 rel=" stylesheet">
-    <script src="//code.jquery.com/jquery-2.2.4.min.js"></script>
-    <script>
-        //共通パーツ読み込み
-        $(function () {
-            $("#Menubar").load("Menubar.html");
-        });
-    </script>
-</head>
-
-<body style="background-image: url(back.gif);">
-    <div class="header">
-        <div class="header-logo">kacho65535'spage</div>
-    </div>
-    <div id="Menubar"></div>
-
-    <div>
-        <script type="text/javascript">
-            var day = new Date(document.lastModified);
-            var y = day.getFullYear();
-            var m = day.getMonth() + 1;
-            var d = day.getDate();
-
-            var week = new Array("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat");
-            var w = week[day.getDay()];
-
-            if (m < 10) m = "0" + m;			// 数値が1～9の時には
-            if (d < 10) d = "0" + d;			// 0 を追加してそろえる
-
-            document.write("Last Update: " + y + "/" + m + "/" + d + " (" + w + ")");
-        </script>
-    </div>
-    <div class="main">
-        <div class="contents">
-            <h3>競技プログラミング用ライブラリ</h3>
-            <h5>蟻本及び螺旋本に載っているアルゴリズムやデータ構造などを編集したものを載せてあります。</h5>
-            <h5>ここに置いてあるコードは自由に使っていただいて結構ですが、自己責任でお願いします。</h5>
-            <ul>
-                <li class="al-list">グラフアルゴリズム
+<div id="Menubar">
+    <div class="Menu">
+        <nav>
+            <ul class="gnav">
+                <li><a href="index.html">Home</a></li>
+                <li>
+                    <a href="">Codes</a>
                     <ul>
-                        <li><a class="link" href="Dijkstra.html" target="_blank">ダイクストラ法</a></li>
-                        <li><a class="link" href="Bellman-Ford.html" target="_blank">ベルマンフォード法</a></li>
-                        <li><a class="link" href="Warshall-Floyd.html" target="_blank">ワーシャルフロイド法</a></li>
-                        <li><a class="link" href="Kruskal.html" target="_blank">クラスカル法</a></li>
-                        <li><a class="link" href="BFS.html" target="_blank">幅優先探索</a></li>
-                        <li><a class="link" href="Topological_Sort.html" target="_blank">トポロジカルソート</a></li>
-                        <li><a class="link" href="Bipartite_Check.html" target="_blank">二部グラフ判定</a></li>
-                        <li><a class="link" href="Partial.html" target="_blank">グラフの連結成分の個数</a></li>
-                        <li><a class="link" href="Restore_BFS.html" target="_blank">経路復元付きBFS</a></li>
+                        <li>
+                            <a href="">グラフアルゴリズム</a>
+                            <ul>
+                                <li><a href="Dijkstra.html">ダイクストラ法</a></li>
+                                <li><a href="Bellman-Ford.html">ベルマンフォード法</a></li>
+                                <li><a href="Warshall-Floyd.html">ワーシャルフロイド法</a></li>
+                                <li><a href="Kruskal.html">クラスカル法</a></li>
+                                <li><a href="BFS.html">幅優先探索</a></li>
+                                <li><a href="Topological_Sort.html">トポロジカルソート</a></li>
+                                <li><a href="Bipartite_Check.html">二部グラフ判定</a></li>
+                                <li><a href="Partial.html">グラフの連結成分の個数</a></li>
+                                <li><a href="Restore_BFS.html">経路復元付きBFS</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="">データ構造</a>
+                            <ul>
+                                <li><a href="Union-Find.html">Union-Find木</a></li>
+                                <li><a href="Weight-Union-Find.html">重み付きUnion-Find木</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="">数学</a>
+                            <ul>
+                                <li><a href="Combination.html">二項係数</a></li>
+                                <li><a href="Prime_judge.html">素数判定</a></li>
+                                <li><a href="Divisor.html">約数列挙</a></li>
+                                <li><a href="Geometry.html">幾何ライブラリ</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="">おまけ</a>
+                            <ul>
+                                <li><a href="Include-File.html">インクルードファイル一覧</a></li>
+                            </ul>
+                        </li>
                     </ul>
                 </li>
-                <li class="al-list">データ構造
+                <li><a href="about.html">About</a></li>
+                <li>
+                    <a href="">Links</a>
                     <ul>
-                        <li><a class="link" href="Union-Find.html" target="_blank">Union-Find木</a></li>
-                        <li><a class="link" href="Weight-Union-Find.html" target="_blank">重み付きUnion-Find木</a></li>
-                    </ul>
-                </li>
-                <li class="al-list">数学
-                    <ul>
-                        <li><a class="link" href="Combination.html" target="_blank">二項係数</a></li>
-                        <li><a class="link" href="Prime_judge.html" target="_blank">素数判定</a></li>
-                        <li><a class="link" href="Divisor.html" target="_blank">約数列挙</a></li>
-                        <li><a class="link" href="Geometry.html" target="_blank">幾何ライブラリ</a></li>
-                    </ul>
-                </li>
-                <li class="al-list">おまけ
-                    <ul>
-                        <li><a class="link" href="Include-File.html" target="_blank">インクルードファイル一覧(c/c++)</a></li>
+                        <li><a href="https://atcoder.jp/users/kacho65535" target="_blank">Atcoder Userpage</a></li>
+                        <li><a href="https://github.com/kacho65535" target="_blank">github</a></li>
+                        <li><a href="https://kacho65535.hatenablog.com/" target="_blank">はてなブログ</a></li>
                     </ul>
                 </li>
             </ul>
-        </div>
+        </nav>
     </div>
-</body>
-<small>
-    <center>© 2020 kacho65535</center>
-</small>
-
-</html>
+</div>
