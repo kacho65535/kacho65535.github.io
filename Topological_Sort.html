@@ -27,46 +27,46 @@
     <div id="page_top"><a href="#"></a></div>
     <pre>
     <code class="prettyprint linenums">
-        /* 
+/* 
         topo_sort(G): グラフG をトポロジカルソート
         返り値: トポロジカルソートされた頂点番号を持つ配列
         計算量: O(|E|+|V|)
         頂点間の距離も管理するときは構造体をつくること
-    */
-    vector&lt;long long&gt; topo_sort(const vector&lt;vector&lt;long long&gt;&gt; &amp;G)
-    { // bfs
-        vector&lt;long long&gt; ans;
-        long long n = (long long)G.size();
-        vector&lt;long long&gt; ind(n); // ind[i]: 頂点iに入る辺の数(次数)
-        for (long long i = 0; i &lt; n; i++)
-        { // 次数を数えておく
-            for (long long next : G[i])
-            {
-                ind[next]++;
-            }
+*/
+vector&lt;long long&gt; topo_sort(const vector&lt;vector&lt;long long&gt;&gt; &amp;G)
+{ // bfs
+    vector&lt;long long&gt; ans;
+    long long n = (long long)G.size();
+    vector&lt;long long&gt; ind(n); // ind[i]: 頂点iに入る辺の数(次数)
+    for (long long i = 0; i &lt; n; i++)
+    { // 次数を数えておく
+        for (long long next : G[i])
+        {
+            ind[next]++;
         }
-        queue&lt;long long&gt; que;
-        for (long long i = 0; i &lt; n; i++)
-        { // 次数が0の点をキューに入れる
-            if (ind[i] == 0)
-                que.push(i);
-        }
-        while (!que.empty())
-        { // 幅優先探索
-            long long now = que.front();
-            ans.push_back(now);
-            que.pop();
-            for (long long next : G[now])
-            {
-                ind[next]--;
-                if (ind[next] == 0)
-                {
-                    que.push(next);
-                }
-            }
-        }
-        return ans;
     }
+    queue&lt;long long&gt; que;
+    for (long long i = 0; i &lt; n; i++)
+    { // 次数が0の点をキューに入れる
+        if (ind[i] == 0)
+            que.push(i);
+    }
+    while (!que.empty())
+    { // 幅優先探索
+        long long now = que.front();
+        ans.push_back(now);
+        que.pop();
+        for (long long next : G[now])
+        {
+            ind[next]--;
+            if (ind[next] == 0)
+            {
+                que.push(next);
+            }
+        }
+    }
+    return ans;
+}
     </code>
     </pre>
 </body>
