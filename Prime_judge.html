@@ -27,25 +27,48 @@
   <div id="page_top"><a href="#"></a></div>
   <pre>
     <code class="prettyprint linenums">
-template &lt;typename T&gt;
 bool primejudge(T n)
 {
-  if (n &lt; 2)
-    return false;
-  else if (n == 2)
-    return true;
-  else if (n % 2 == 0)
-    return false;
-  double sqrtn = sqrt(n);
-  for (T i = 3; i &lt; sqrtn + 1; i++)
-  {
-    if (n % i == 0)
+    if (n &lt; 2)
+        return false;
+    else if (n == 2)
+        return true;
+    else if (n % 2 == 0)
+        return false;
+    double sqrtn = sqrt(n);
+    for (T i = 3; i &lt; sqrtn + 1; i++)
     {
-      return false;
+        if (n % i == 0)
+        {
+            return false;
+        }
+        i++;
     }
-    i++;
-  }
-  return true;
+    return true;
+}
+/*
+0~nまでのn+1個のそれぞれの整数が素数であるかを判定
+計算量はO(nloglogn)
+n&lt;=10^6程度なら愚直に素数判定しても間に合うが、n&lt;=10^7程度だとエラストネスの篩が必要
+*/
+template &lt;typename T&gt;
+vector&lt;bool&gt; Eratosthenes(T n)
+{
+    vector&lt;bool&gt; ret(n + 1, true);
+    if (n &gt;= 0)
+        ret[0] = false;
+    if (n &gt;= 1)
+        ret[1] = false;
+    for (T i = 2; i * i &lt;= n; i++)
+    {
+        if (!ret[i])
+            continue;
+        for (T j = i * i; j &lt;= n; j += i)
+        {
+            ret[j] = false;
+        }
+    }
+    return ret;
 }
     </code>
     </pre>
