@@ -90,6 +90,26 @@ bool primejudge(T n)
     }
     return true;
 }
+template &lt;typename T&gt;
+bool chmax(T &amp;a, const T &amp;b)
+{
+    if (a &lt; b)
+    {
+        a = b; // aをbで更新
+        return true;
+    }
+    return false;
+}
+template &lt;typename T&gt;
+bool chmin(T &amp;a, const T &amp;b)
+{
+    if (a &gt; b)
+    {
+        a = b; // aをbで更新
+        return true;
+    }
+    return false;
+}
 //場合によって使い分ける
 //const ll dx[4]={1,0,-1,0};
 //const ll dy[4]={0,1,0,-1};
@@ -100,7 +120,7 @@ const ll dy[8] = {0, 1, 1, 1, 0, -1, -1, -1};
 
 int main()
 {
-    cout &lt;&lt; fixed &lt;&lt; setprecision(20);
+    cout &lt;&lt; fixed &lt;&lt; setprecision(30);
     return 0;
 }
     </code>
