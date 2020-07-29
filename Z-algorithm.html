@@ -42,7 +42,7 @@ vector&lt;long long&gt; Z_algorithm(string S)
     long long pre = 0;
     for (long long i = 1; i &lt; siz; i++)
     {
-        //計算済みの最大共通接頭辞に完全に覆われる
+        //計算済みの最長共通接頭辞に完全に覆われる
         if (i + ret[i - pre] &lt; pre + ret[pre])
             ret[i] = ret[i - pre];
         //はみ出すorそもそもかぶらない場合
@@ -54,7 +54,7 @@ vector&lt;long long&gt; Z_algorithm(string S)
             while ((i + j) &lt; siz &amp;&amp; S[j] == S[i + j])
                 j++;
             ret[i] = j;
-            //鋳型となる最大共通接頭辞を変更する
+            //鋳型となる最長共通接頭辞を変更する
             pre = i;
         }
     }
