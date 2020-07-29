@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>最長共通接頭辞(Z-algorithm)</title>
+    <link rel="stylesheet" href="code-style.css">
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="option.js"></script>
+    <script src="//code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script>
+        //共通パーツ読み込み
+        $(function () {
+            $("#Menubar").load("Menubar.html");
+        });
+    </script>
+</head>
+
+<body style="background-image: url(back.gif);">
+    <div class="header">
+        <div class="header-logo">kacho65535'spage</div>
+    </div>
+    <div id="Menubar"></div>
+    <div class="contents">
+        <h3>最長共通接頭辞(Z-algorithm)</h3>
+        <p>このアルゴリズムの実装には、<a href="https://snuke.hatenablog.com/entry/2014/12/03/214243">snukeさんの解説</a>及び
+            <a href="https://sen-comp.hatenablog.com/entry/2020/01/16/174230">
+                Senさんの解説</a>
+            を大変参考にさせていただきました。</p>
+    </div>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.4/css/all.css">
+    <div id="page_top"><a href="#"></a></div>
+    <pre>
+    <code class="prettyprint linenums">
+//SとS.substr(i,|S|-i)(i=0~|S|-1)の最長共通接頭辞の長さを格納した配列を返す
+vector&lt;long long&gt; Z_algorithm(string S)
+{
+    long long siz = S.size();
+    vector&lt;long long&gt; ret(siz);
+    long long pre = 0;
+    for (long long i = 1; i &lt; siz; i++)
+    {
+        //計算済みの最大共通接頭辞に完全に覆われる
+        if (i + ret[i - pre] &lt; pre + ret[pre])
+            ret[i] = ret[i - pre];
+        //はみ出すorそもそもかぶらない場合
+        else
+        {
+            //覆われている部分の長さ(かぶらない場合は0)
+            long long j = max(0ll, pre + ret[pre] - i);
+            //愚直にチェック
+            while ((i + j) &lt; siz &amp;&amp; S[j] == S[i + j])
+                j++;
+            ret[i] = j;
+            //鋳型となる最大共通接頭辞を変更する
+            pre = i;
+        }
+    }
+    //先頭はイレギュラーなので別に求める
+    ret[0] = siz;
+    return ret;
+}
+    </code>
+    </pre>
+</body>
+<small>
+    <center>© 2020 kacho65535</center>
+</small>
+
+</html>
