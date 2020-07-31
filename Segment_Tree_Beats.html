@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Segment Tree Beats</title>
+    <link rel="stylesheet" href="code-style.css">
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="option.js"></script>
+    <script src="//code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script>
+        //共通パーツ読み込み
+        $(function () {
+            $("#Menubar").load("Menubar.html");
+        });
+    </script>
+</head>
+
+<body style="background-image: url(back.gif);">
+    <div class="header">
+        <div class="header-logo">kacho65535'spage</div>
+    </div>
+    <div id="Menubar"></div>
+    <div class="contents">
+        <h3>Segment Tree Beats</h3>
+        <p>このデータ構造の実装には、
+            <a href="https://smijake3.hatenablog.com/entry/2019/04/28/021457">
+                yaketake08さん</a><a
+                href="https://tjkendev.github.io/procon-library/cpp/range_query/segment_tree_beats_2.html">の解説</a>
+            を大変参考にさせていただきました。</p>
+    </div>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.4/css/all.css">
+    <div id="page_top"><a href="#"></a></div>
+    <pre>
+    <code class="prettyprint linenums">
+/*
+&lt;Segment Tree Beats&gt;
+様々なクエリに対応した万能遅延セグメント木(0-indexed)
+Segment_Tree_Beats tree(N);もしくは
+Segment_Tree_Beats tree(N,a);などで宣言(N:配列のサイズ,a:入れたい配列)
+tree.update_max(l,r,x):区間[l,r]内のiについてa[i]をmax(a[i],x)に更新
+tree.update_min(l,r,x):区間[l,r]内のiについてa[i]をmin(a[i],x)に更新
+tree.query_add(l,r,x):区間[l,r]内のiについてa[i]にxを加算
+tree.query_val(l,r,x):区間[l,r]内のiについてa[i]をxに更新
+tree.query_max(l,r):区間[l,r]に対する最大値クエリ
+tree.query_min(l,r):区間[l,r]に対する最小値クエリ
+tree.query_sum(l,r):区間[l,r]に対する区間和クエリ
+*/
+struct Segment_Tree_Beats
+{
+    const long long INF = 1e18 + 9;
+    long long n, n0;
+    vector&lt;long long&gt; fmax;   //最大値
+    vector&lt;long long&gt; smax;   //2番目に大きい値
+    vector&lt;long long&gt; fmax_c; //最大値の個数
+    vector&lt;long long&gt; fmin;   //最小値
+    vector&lt;long long&gt; smin;   //2番目に小さい値
+    vector&lt;long long&gt; fmin_c; //最小値の個数
+    vector&lt;long long&gt; sum;    //区間和
+    vector&lt;long long&gt; len;    //区間の長さ
+    vector&lt;long long&gt; ladd;   //遅延加算
+    vector&lt;long long&gt; lval;   //遅延更新
+    Segment_Tree_Beats(long long N) : n(N), fmax(4 * N), smax(4 * N), fmax_c(4 * N), fmin(4 * N), smin(4 * N),
+                                      fmin_c(4 * N), sum(4 * N), len(4 * N), ladd(4 * N), lval(4 * N)
+    {
+        n0 = 1;
+        while (n0 &lt; n)
+            n0 *= 2;
+        len[0] = n0;
+        for (long long i = 0; i &lt; 2 * n0; i++)
+        {
+            lval[i] = INF;
+        }
+        for (long long i = 0; i &lt; n0 - 1; i++)
+        {
+            len[2 * i + 1] = len[i] * 2;
+            len[2 * i + 2] = len[i] * 2;
+        }
+
+        for (long long i = 0; i &lt; n; i++)
+        {
+            long long nn = n0 - 1 + i;
+            smax[nn] = -INF;
+            smin[nn] = INF;
+            fmax_c[nn] = 1;
+            fmin_c[nn] = 1;
+        }
+        for (long long i = n; i &lt; n0; i++)
+        {
+            long long nn = n0 - 1 + i;
+            fmax[nn] = -INF;
+            smax[nn] = -INF;
+            fmin[nn] = INF;
+            smin[nn] = INF;
+        }
+        for (long long i = n0 - 2; i &gt;= 0; i--)
+        {
+            update(i);
+        }
+    }
+    Segment_Tree_Beats(long long N, vector&lt;long long&gt; &amp;A) : n(N), fmax(4 * N), smax(4 * N), fmax_c(4 * N), fmin(4 * N), smin(4 * N),
+                                                            fmin_c(4 * N), sum(4 * N), len(4 * N), ladd(4 * N), lval(4 * N)
+    {
+        n0 = 1;
+        while (n0 &lt; n)
+            n0 *= 2;
+        len[0] = n0;
+        for (long long i = 0; i &lt; 2 * n0; i++)
+        {
+            lval[i] = INF;
+        }
+        for (long long i = 0; i &lt; n0 - 1; i++)
+        {
+            len[2 * i + 1] = len[i] * 2;
+            len[2 * i + 2] = len[i] * 2;
+        }
+
+        for (long long i = 0; i &lt; n; i++)
+        {
+            long long nn = n0 - 1 + i;
+            fmax[nn] = A[i];
+            fmin[nn] = A[i];
+            sum[nn] = A[i];
+            smax[nn] = -INF;
+            smin[nn] = INF;
+            fmax_c[nn] = 1;
+            fmin_c[nn] = 1;
+        }
+        for (long long i = n; i &lt; n0; i++)
+        {
+            long long nn = n0 - 1 + i;
+            fmax[nn] = -INF;
+            smax[nn] = -INF;
+            fmin[nn] = INF;
+            smin[nn] = INF;
+        }
+        for (long long i = n0 - 2; i &gt;= 0; i--)
+        {
+            update(i);
+        }
+    }
+    void update_node_max(long long k, long long x)
+    {
+        sum[k] += (x - fmax[k]) * fmax_c[k];
+        if (fmax[k] == fmin[k])
+        {
+            fmax[k] = x;
+            fmin[k] = x;
+        }
+        else
+        {
+            if (fmax[k] == smin[k])
+            {
+                fmax[k] = x;
+                smin[k] = x;
+            }
+            else
+                fmax[k] = x;
+        }
+        //遅延処理
+        if (lval[k] != INF &amp;&amp; x &lt; lval[k])
+            lval[k] = x;
+    }
+    void update_node_min(long long k, long long x)
+    {
+        sum[k] += (x - fmin[k]) * fmin_c[k];
+        if (fmin[k] == fmax[k])
+        {
+            fmin[k] = x;
+            fmax[k] = x;
+        }
+        else
+        {
+            if (fmin[k] == smax[k])
+            {
+                fmin[k] = x;
+                smax[k] = x;
+            }
+            else
+                fmin[k] = x;
+        }
+        //遅延処理
+        if (lval[k] != INF &amp;&amp; lval[k] &lt; x)
+            lval[k] = x;
+    }
+    //全体加算
+    void addall(long long k, long long x)
+    {
+        fmax[k] += x;
+        fmin[k] += x;
+        if (smax[k] != -INF)
+            smax[k] += x;
+        if (smin[k] != INF)
+            smin[k] += x;
+        sum[k] += len[k] * x;
+        if (lval[k] != INF)
+            lval[k] += x;
+        else
+            ladd[k] += x;
+    }
+    //全体更新
+    void updateall(long long k, long long x)
+    {
+        fmax[k] = x;
+        fmin[k] = x;
+        smax[k] = -INF;
+        smin[k] = INF;
+        fmax_c[k] = len[k];
+        fmin_c[k] = len[k];
+        sum[k] = x * len[k];
+        lval[k] = x;
+        ladd[k] = 0;
+    }
+    //親-&gt;子への伝播
+    void push(long long k)
+    {
+        if ((k - n0 + 1) &gt;= 0)
+            return;
+        //遅延伝播
+        if (lval[k] != INF)
+        {
+            updateall(2 * k + 1, lval[k]);
+            updateall(2 * k + 2, lval[k]);
+            lval[k] = INF;
+            return;
+        }
+        if (ladd[k] != 0)
+        {
+            addall(2 * k + 1, ladd[k]);
+            addall(2 * k + 2, ladd[k]);
+            ladd[k] = 0;
+        }
+        for (int i = 1; i &lt;= 2; i++)
+        {
+            if (fmax[k] &lt; fmax[2 * k + i])
+                update_node_max(2 * k + i, fmax[k]);
+            if (fmin[k] &gt; fmin[2 * k + i])
+                update_node_min(2 * k + i, fmin[k]);
+        }
+    }
+    //子-&gt;親への伝播
+    void update(long long k)
+    {
+        sum[k] = sum[2 * k + 1] + sum[2 * k + 2];
+        //最大値関連の更新(大きい方を優先)
+        if (fmax[2 * k + 1] &lt; fmax[2 * k + 2])
+        {
+            fmax[k] = fmax[2 * k + 2];
+            fmax_c[k] = fmax_c[2 * k + 2];
+            smax[k] = max(fmax[2 * k + 1], smax[2 * k + 2]);
+        }
+        if (fmax[2 * k + 1] &gt; fmax[2 * k + 2])
+        {
+            fmax[k] = fmax[2 * k + 1];
+            fmax_c[k] = fmax_c[2 * k + 1];
+            smax[k] = max(fmax[2 * k + 2], smax[2 * k + 1]);
+        }
+        if (fmax[2 * k + 1] == fmax[2 * k + 2])
+        {
+            fmax[k] = fmax[2 * k + 1];
+            fmax_c[k] = fmax_c[2 * k + 1] + fmax_c[2 * k + 2];
+            smax[k] = max(smax[2 * k + 1], smax[2 * k + 2]);
+        }
+        //最小値関連の更新(小さい方を優先)
+        if (fmin[2 * k + 1] &lt; fmin[2 * k + 2])
+        {
+            fmin[k] = fmin[2 * k + 1];
+            fmin_c[k] = fmin_c[2 * k + 1];
+            smin[k] = min(fmin[2 * k + 2], smin[2 * k + 1]);
+        }
+        if (fmin[2 * k + 1] &gt; fmin[2 * k + 2])
+        {
+            fmin[k] = fmin[2 * k + 2];
+            fmin_c[k] = fmin_c[2 * k + 2];
+            smin[k] = min(fmin[2 * k + 1], smin[2 * k + 2]);
+        }
+        if (fmin[2 * k + 1] == fmin[2 * k + 2])
+        {
+            fmin[k] = fmin[2 * k + 1];
+            fmin_c[k] = fmin_c[2 * k + 1] + fmin_c[2 * k + 2];
+            smin[k] = max(smin[2 * k + 1], smin[2 * k + 2]);
+        }
+    }
+    //区間[a,b)内のiについてa[i]をmax(a[i],x)に更新
+    void _update_max(long long x, long long a, long long b, long long k, long long l, long long r)
+    {
+        //区間をはみ出すorｘが最小値以下
+        if (b &lt;= l || r &lt;= a || fmin[k] &gt;= x)
+            return;
+        //(最小値)&lt;x&lt;(2番目に小さい値)のとき
+        if (l &gt;= a &amp;&amp; r &lt;= b &amp;&amp; smin[k] &gt; x)
+        {
+            update_node_min(k, x);
+            return;
+        }
+        //親-&gt;子-&gt;親
+        push(k);
+        _update_max(x, a, b, 2 * k + 1, l, (l + r) / 2);
+        _update_max(x, a, b, 2 * k + 2, (l + r) / 2, r);
+        update(k);
+    }
+    //区間[a,b)内のiについてa[i]をmin(a[i],x)に更新
+    void _update_min(long long x, long long a, long long b, long long k, long long l, long long r)
+    {
+        //区間をはみ出すorｘが最大値以上
+        if (b &lt;= l || r &lt;= a || fmax[k] &lt;= x)
+            return;
+        //(2番目に大きい値)&lt;x&lt;(最大値)のとき
+        if (l &gt;= a &amp;&amp; r &lt;= b &amp;&amp; smax[k] &lt; x)
+        {
+            update_node_max(k, x);
+            return;
+        }
+        //親-&gt;子-&gt;親
+        push(k);
+        _update_min(x, a, b, 2 * k + 1, l, (l + r) / 2);
+        _update_min(x, a, b, 2 * k + 2, (l + r) / 2, r);
+        update(k);
+    }
+    //区間[a,b)に対する最大値クエリ
+    long long _query_max(long long a, long long b, long long k, long long l, long long r)
+    {
+        if (b &lt;= l || a &gt;= r)
+            return 0; //区間外
+        if (a &lt;= l &amp;&amp; r &lt;= b)
+            return fmax[k];
+        push(k);
+        long long L = _query_max(a, b, 2 * k + 1, l, (l + r) / 2);
+        long long R = _query_max(a, b, 2 * k + 2, (l + r) / 2, r);
+        return max(L, R);
+    }
+    //区間[a,b)に対する最小値クエリ
+    long long _query_min(long long a, long long b, long long k, long long l, long long r)
+    {
+        if (b &lt;= l || a &gt;= r)
+            return INF; //区間外
+        if (a &lt;= l &amp;&amp; r &lt;= b)
+            return fmin[k];
+        push(k);
+        long long L = _query_min(a, b, 2 * k + 1, l, (l + r) / 2);
+        long long R = _query_min(a, b, 2 * k + 2, (l + r) / 2, r);
+        return min(L, R);
+    }
+    //区間[a,b)に対する区間和クエリ
+    long long _query_sum(long long a, long long b, long long k, long long l, long long r)
+    {
+        if (b &lt;= l || a &gt;= r)
+            return 0; //区間外
+        if (a &lt;= l &amp;&amp; r &lt;= b)
+            return sum[k];
+        push(k);
+        long long L = _query_sum(a, b, 2 * k + 1, l, (l + r) / 2);
+        long long R = _query_sum(a, b, 2 * k + 2, (l + r) / 2, r);
+        return (L + R);
+    }
+    //区間[a,b)に対する区間加算クエリ
+    void _query_add(long long x, long long a, long long b, long long k, long long l, long long r)
+    {
+        if (b &lt;= l || a &gt;= r)
+            return; //区間外
+        if (a &lt;= l &amp;&amp; r &lt;= b)
+        {
+            addall(k, x);
+            return;
+        }
+        push(k);
+        _query_add(x, a, b, 2 * k + 1, l, (l + r) / 2);
+        _query_add(x, a, b, 2 * k + 2, (l + r) / 2, r);
+        update(k);
+    }
+    //区間[a,b)に対する区間更新クエリ
+    void _query_val(long long x, long long a, long long b, long long k, long long l, long long r)
+    {
+        if (b &lt;= l || a &gt;= r)
+            return; //区間外
+        if (a &lt;= l &amp;&amp; r &lt;= b)
+        {
+            updateall(k, x);
+            return;
+        }
+        push(k);
+        _query_val(x, a, b, 2 * k + 1, l, (l + r) / 2);
+        _query_val(x, a, b, 2 * k + 2, (l + r) / 2, r);
+        update(k);
+    }
+    //以下外から利用するメンバ関数を羅列///////////////////////////////////////
+    //区間[l,r]内のiについてa[i]をmax(a[i],x)に更新
+    void update_max(long long l, long long r, long long x)
+    {
+        _update_max(x, l, r + 1, 0, 0, n0);
+    }
+    //区間[l,r]内のiについてa[i]をmin(a[i],x)に更新
+    void update_min(long long l, long long r, long long x)
+    {
+        _update_min(x, l, r + 1, 0, 0, n0);
+    }
+    //区間[l,r]内のiについてa[i]にxを加算
+    void query_add(long long l, long long r, long long x)
+    {
+        _query_add(x, l, r + 1, 0, 0, n0);
+    }
+    //区間[l,r]内のiについてa[i]をxに更新
+    void query_val(long long l, long long r, long long x)
+    {
+        _query_val(x, l, r + 1, 0, 0, n0);
+    }
+    //区間[l,r]に対する最大値クエリ
+    long long query_max(long long l, long long r)
+    {
+        return _query_max(l, r + 1, 0, 0, n0);
+    }
+    //区間[l,r]に対する最小値クエリ
+    long long query_min(long long l, long long r)
+    {
+        return _query_min(l, r + 1, 0, 0, n0);
+    }
+    //区間[l,r]に対する区間和クエリ
+    long long query_sum(long long l, long long r)
+    {
+        return _query_sum(l, r + 1, 0, 0, n0);
+    }
+};
+    </code>
+    </pre>
+</body>
+<small>
+    <center>© 2020 kacho65535</center>
+</small>
+
+</html>
