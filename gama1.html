@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css?family=Alegreya+Sans+SC:300 rel=" stylesheet">
+    <script src="//code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script>
+        //共通パーツ読み込み
+        $(function () {
+            $("#Menubar").load("Menubar.html");
+        });
+    </script>
+</head>
+
+<body style="background-image: url(back.gif);">
+    <div class="header">
+        <div class="header-logo">kacho65535'spage</div>
+    </div>
+    <div id="Menubar"></div>
+    <div>
+        <script type="text/javascript">
+            var day = new Date(document.lastModified);
+            var y = day.getFullYear();
+            var m = day.getMonth() + 1;
+            var d = day.getDate();
+
+            var week = new Array("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat");
+            var w = week[day.getDay()];
+
+            if (m < 10) m = "0" + m;			// 数値が1～9の時には
+            if (d < 10) d = "0" + d;			// 0 を追加してそろえる
+
+            document.write("Last Update: " + y + "/" + m + "/" + d + " (" + w + ")");
+        </script>
+    </div>
+    <div class="main">
+        <div class="contents">
+            <h3>キャッチャーゲーム</h3>
+            <p>操作方法:矢印キーで移動</p>
+            <p>10ポイント獲得でゲームクリア 但し爆弾をとるとペナルティ</p>
+            <p>BGMは甘茶の音楽工房さんよりお借りしました。</p>
+        </div>
+        <center>
+            <div class="iframe-wrapper" style="width:2880px; height:1620px;"><iframe class="iframe-inner"
+                    frameborder="0" id="webgl-frame" scrolling="auto"
+                    src="https://object-storage.tyo1.conoha.io/v1/nc_df3bdbc45bc04950b558834f5728517a/unityroom_production/game/14027/webgl/play.html"></iframe>
+            </div>
+        </center>
+</body>
+<small>
+    <center>© 2020 kacho65535</center>
+</small>
+
+</html>
