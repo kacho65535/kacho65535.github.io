@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>サイクル検出</title>
+    <link rel="stylesheet" href="code-style.css">
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="option.js"></script>
+    <script src="//code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script>
+        //共通パーツ読み込み
+        $(function () {
+            $("#Menubar").load("Menubar.html");
+        });
+    </script>
+</head>
+
+<body style="background-image: url(back.gif);">
+    <div class="header">
+        <div class="header-logo">kacho65535'spage</div>
+    </div>
+    <div id="Menubar"></div>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.4/css/all.css">
+    <div id="page_top"><a href="#"></a></div>
+    <pre>
+    <code class="prettyprint linenums">
+/*
+有向グラフまたは無向グラフにサイクルが存在すればtrueを返す
+cycle_check1(G):有向グラフにおけるサイクル検出
+cycle_check2(G):無向グラフにおけるサイクル検出
+*/
+struct union_find
+{
+    vector&lt;long long&gt; par;  //親の番号　
+    vector&lt;long long&gt; rank; //木の深さ(根のランクは0)
+    vector&lt;long long&gt; siz;  //要素xが根なら木の頂点数を格納する
+    //初期化子リストを用いた初期化
+    union_find(long long N) : par(N), rank(N), siz(N)
+    {
+        for (long long i = 0; i &lt; N; i++)
+        {
+            par[i] = i;
+            rank[i] = 0;
+            siz[i] = 1;
+        }
+    }
+    //要素xが所属する木の根を再帰的に発見する
+    long long root(long long x)
+    {
+        if (par[x] == x)
+            return x;
+        return par[x] = root(par[x]); //経路圧縮
+    }
+    //要素xが属する木と要素yが属する木の併合
+    void unite(long long x, long long y)
+    {
+        long long rx = root(x);
+        long long ry = root(y);
+        if (rx == ry)
+            return; //同じ木に属してたらそのまま
+        if (rank[rx] &lt; rank[ry])
+        {
+            par[rx] = ry; //根がryの木に併合
+            siz[ry] = siz[rx] + siz[ry];
+        }
+        else
+        {
+            par[ry] = rx; //根がrxの木に併合
+            siz[rx] = siz[rx] + siz[ry];
+            if (rank[rx] == rank[ry])
+                rank[rx]++;
+        }
+    }
+    //要素xが属する木と要素yが属する木が同じならtrueを返す
+    bool same(long long x, long long y)
+    {
+        return root(x) == root(y);
+    }
+    //要素xが属する木の頂点数を返す
+    long long size(long long x)
+    {
+        return siz[root(x)];
+    }
+};
+
+bool cycle_check1(const vector&lt;vector&lt;long long&gt;&gt; &amp;G)
+{
+    vector&lt;long long&gt; ans;
+    long long n = (long long)G.size();
+    vector&lt;long long&gt; ind(n); // ind[i]: 頂点iに入る辺の数(次数)
+    for (long long i = 0; i &lt; n; i++)
+    { // 次数を数えておく
+        for (long long next : G[i])
+        {
+            ind[next]++;
+        }
+    }
+    queue&lt;long long&gt; que;
+    for (long long i = 0; i &lt; n; i++)
+    { // 次数が0の点をキューに入れる
+        if (ind[i] == 0)
+            que.push(i);
+    }
+    while (!que.empty())
+    { // 幅優先探索
+        long long now = que.front();
+        ans.push_back(now);
+        que.pop();
+        for (long long next : G[now])
+        {
+            ind[next]--;
+            if (ind[next] == 0)
+            {
+                que.push(next);
+            }
+        }
+    }
+    return (long long)(ans.size()) != n;
+}
+
+bool cycle_check2(const vector&lt;vector&lt;long long&gt;&gt; &amp;G)
+{
+    long long n = G.size();
+    vector&lt;pair&lt;long long, long long&gt;&gt; edges;
+    for (long long i = 0; i &lt; n; i++)
+    {
+        long long siz = G[i].size();
+        for (long long j = 0; j &lt; siz; j++)
+        {
+            if (i &lt; G[i][j])
+                edges.push_back(make_pair(i, G[i][j]));
+        }
+    }
+    long long m = edges.size();
+    union_find tree(n);
+    bool ret = false;
+    for (long long i = 0; i &lt; m; i++)
+    {
+        long long s = edges[i].first, t = edges[i].second;
+        if (tree.same(s, t))
+        {
+            ret = true;
+            break;
+        }
+        tree.unite(s, t);
+    }
+    return ret;
+}
+    </code>
+    </pre>
+</body>
+<small>
+    <center>© 2020 kacho65535</center>
+</small>
+
+</html>
