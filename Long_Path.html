@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAGの最長パス</title>
+    <link rel="stylesheet" href="code-style.css">
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="option.js"></script>
+    <script src="//code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script>
+        //共通パーツ読み込み
+        $(function () {
+            $("#Menubar").load("Menubar.html");
+        });
+    </script>
+</head>
+
+<body style="background-image: url(back.gif);">
+    <div class="header">
+        <div class="header-logo">kacho65535'spage</div>
+    </div>
+    <div id="Menubar"></div>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.4/css/all.css">
+    <div id="page_top"><a href="#"></a></div>
+    <pre>
+    <code class="prettyprint linenums">
+vector&lt;long long&gt; topo_sort(const vector&lt;vector&lt;long long&gt;&gt; &amp;G)
+{ // bfs
+    vector&lt;long long&gt; ans;
+    long long n = (long long)G.size();
+    vector&lt;long long&gt; ind(n); // ind[i]: 頂点iに入る辺の数(次数)
+    for (long long i = 0; i &lt; n; i++)
+    { // 次数を数えておく
+        for (long long next : G[i])
+        {
+            ind[next]++;
+        }
+    }
+    queue&lt;long long&gt; que;
+    for (long long i = 0; i &lt; n; i++)
+    { // 次数が0の点をキューに入れる
+        if (ind[i] == 0)
+            que.push(i);
+    }
+    while (!que.empty())
+    { // 幅優先探索
+        long long now = que.front();
+        ans.push_back(now);
+        que.pop();
+        for (long long next : G[now])
+        {
+            ind[next]--;
+            if (ind[next] == 0)
+            {
+                que.push(next);
+            }
+        }
+    }
+    return ans;
+}
+//DAGの最長パスの長さ(最長パスに使われる辺の数)を返す
+long long long_path(const vector&lt;vector&lt;long long&gt;&gt; &amp;G)
+{
+    long long n = G.size();
+    vector&lt;long long&gt; topo = topo_sort(G);
+    reverse(topo.begin(), topo.end());
+    vector&lt;long long&gt; dp(n, 0);
+    long long ret = 0;
+    //後ろから更新していく
+    for (long long i : topo)
+    {
+        for (long long j : G[i])
+        {
+            dp[i] = max(dp[i], dp[j] + 1);
+        }
+        ret = max(ret, dp[i]);
+    }
+    return ret;
+}
+    </code>
+    </pre>
+</body>
+<small>
+    <center>© 2020 kacho65535</center>
+</small>
+
+</html>
