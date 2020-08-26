@@ -323,7 +323,7 @@ struct Segment_Tree_Beats
     long long _query_max(long long a, long long b, long long k, long long l, long long r)
     {
         if (b &lt;= l || a &gt;= r)
-            return 0; //区間外
+            return -INF; //区間外
         if (a &lt;= l &amp;&amp; r &lt;= b)
             return fmax[k];
         push(k);
