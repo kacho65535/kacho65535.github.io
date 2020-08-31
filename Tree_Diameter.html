@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>木の直径</title>
+    <link rel="stylesheet" href="code-style.css">
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="option.js"></script>
+    <script src="//code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script>
+        //共通パーツ読み込み
+        $(function () {
+            $("#Menubar").load("Menubar.html");
+        });
+    </script>
+</head>
+
+<body style="background-image: url(back.gif);">
+    <div class="header">
+        <div class="header-logo">kacho65535'spage</div>
+    </div>
+    <div id="Menubar"></div>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.4/css/all.css">
+    <div id="page_top"><a href="#"></a></div>
+    <pre>
+    <code class="prettyprint linenums">
+//無向グラフの木の直径を求める(重みなしなら辺のcostを1に)
+struct edge
+{
+    long long to;
+    long long cost;
+    edge(long long t, long long c) : to(t), cost(c) {}
+};
+pair&lt;long long, long long&gt; dia_dfs(const vector&lt;vector&lt;edge&gt;&gt; &amp;G, long long v, long long par)
+{
+    pair&lt;long long, long long&gt; ret = make_pair(0, v);
+    for (auto e : G[v])
+    {
+        long long nv = e.to;
+        if (nv == par)
+            continue;
+        auto next = dia_dfs(G, nv, v);
+        next.first += e.cost;
+        ret = max(ret, next);
+    }
+    return ret;
+}
+long long tree_diameter(const vector&lt;vector&lt;edge&gt;&gt; &amp;G)
+{
+    auto p = dia_dfs(G, 0, -1), q = dia_dfs(G, p.second, -1);
+    return q.first;
+}
+//木の直径の端点の組の1つを返す(0-indexed)
+pair&lt;long long, long long&gt; tree_end_nodes(const vector&lt;vector&lt;edge&gt;&gt; &amp;G)
+{
+    auto p = dia_dfs(G, 0, -1), q = dia_dfs(G, p.second, -1);
+    return make_pair(p.second, q.second);
+}
+    </code>
+    </pre>
+</body>
+<small>
+    <center>© 2020 kacho65535</center>
+</small>
+
+</html>
