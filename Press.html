@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>座標圧縮</title>
+    <link rel="stylesheet" href="code-style.css">
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="option.js"></script>
+    <script src="//code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script>
+        //共通パーツ読み込み
+        $(function () {
+            $("#Menubar").load("Menubar.html");
+        });
+    </script>
+</head>
+
+<body style="background-image: url(back.gif);">
+    <div class="header">
+        <div class="header-logo">kacho65535'spage</div>
+    </div>
+    <div id="Menubar"></div>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.4/css/all.css">
+    <div id="page_top"><a href="#"></a></div>
+    <pre>
+    <code class="prettyprint linenums">
+//配列の数値が小さい順に0-indexedでナンバリングする(同種なら同じ値)
+//配列を書き換えるので、必要ならばあらかじめ圧縮前の配列を別に保存しておく
+template &lt;typename T&gt;
+void press(vector&lt;T&gt; &amp;A)
+{
+    vector&lt;T&gt; sorted = A;
+    sort(sorted.begin(), sorted.end());
+    auto itr = unique(sorted.begin(), sorted.end());
+    sorted.erase(itr, sorted.end());
+    for (int i = 0; i &lt; A.size(); i++)
+        A[i] = lower_bound(sorted.begin(), sorted.end(), A[i]) - sorted.begin();
+    return;
+}
+    </code>
+    </pre>
+</body>
+<small>
+    <center>© 2020 kacho65535</center>
+</small>
+
+</html>
