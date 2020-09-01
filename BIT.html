@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binary Indexed Tree</title>
+    <link rel="stylesheet" href="code-style.css">
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="option.js"></script>
+    <script src="//code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script>
+        //共通パーツ読み込み
+        $(function () {
+            $("#Menubar").load("Menubar.html");
+        });
+    </script>
+</head>
+
+<body style="background-image: url(back.gif);">
+    <div class="header">
+        <div class="header-logo">kacho65535'spage</div>
+    </div>
+    <div id="Menubar"></div>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.4/css/all.css">
+    <div id="page_top"><a href="#"></a></div>
+    <pre>
+    <code class="prettyprint linenums">
+/*
+BIT&lt;long long&gt; data(n);などで宣言(初期値は0)
+または配列の値をvector&lt;long long&gt; a(n)などで初期化したいとき
+BIT&lt;long long&gt; data(n,a);で宣言
+以下0-indexedと仮定する
+data.sum(l,r):区間[l,r]の和
+data.at(i):i番目の値
+data.add(i,x):i番目にxを加算 
+*/
+template &lt;typename T&gt;
+struct BIT
+{
+private:
+    vector&lt;T&gt; bit;
+    T n;
+    T sum(T x)
+    {
+        T ret = 0;
+        while (x &gt; 0)
+        {
+            ret += bit[x];
+            x -= x &amp; -x;
+        }
+        return ret;
+    }
+
+public:
+    BIT(T n0) : bit(n0 + 1, 0), n(n0) {}
+    BIT(T n0, vector&lt;T&gt; &amp;A) : bit(n0 + 1, 0), n(n0)
+    {
+        for (int i = 1; i &lt;= n; i++)
+            bit[i] = A[i - 1];
+        for (int i = 1; i &lt; n; i++)
+            bit[i + (i &amp; -i)] += bit[i];
+    }
+    T sum(T l, T r)
+    {
+        return sum(r + 1) - sum(l);
+    }
+    T at(T x)
+    {
+        return sum(x, x);
+    }
+    void add(T p, T x)
+    {
+        T i = p + 1;
+        while (i &lt;= n)
+        {
+            bit[i] += x;
+            i += i &amp; -i;
+        }
+    }
+};
+//配列の数値が小さい順に0-indexedでナンバリングする(同種なら同じ値)
+//配列を書き換えるので、必要ならばあらかじめ圧縮前の配列を別に保存しておく
+template &lt;typename T&gt;
+void press(vector&lt;T&gt; &amp;A)
+{
+    vector&lt;T&gt; sorted = A;
+    sort(sorted.begin(), sorted.end());
+    auto itr = unique(sorted.begin(), sorted.end());
+    sorted.erase(itr, sorted.end());
+    for (int i = 0; i &lt; A.size(); i++)
+        A[i] = lower_bound(sorted.begin(), sorted.end(), A[i]) - sorted.begin();
+    return;
+}
+//配列Aの転倒数を求める
+template &lt;typename T&gt;
+T inversion(vector&lt;T&gt; A)
+{
+    T siz = A.size();
+    //まずは座圧
+    vector&lt;T&gt; B = A;
+    press(B);
+    BIT&lt;T&gt; inv(siz);
+    T ret = 0;
+    for (int i = 0; i &lt; siz; i++)
+    {
+        ret += (i - inv.sum(0, B[i]));
+        inv.add(B[i], 1);
+    }
+    return ret;
+}
+    </code>
+    </pre>
+</body>
+<small>
+    <center>© 2020 kacho65535</center>
+</small>
+
+</html>
