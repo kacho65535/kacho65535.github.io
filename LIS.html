@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>最長部分増加列(LIS)</title>
+    <link rel="stylesheet" href="code-style.css">
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="option.js"></script>
+    <script src="//code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script>
+        //共通パーツ読み込み
+        $(function () {
+            $("#Menubar").load("Menubar.html");
+        });
+    </script>
+</head>
+
+<body style="background-image: url(back.gif);">
+    <div class="header">
+        <div class="header-logo">kacho65535'spage</div>
+    </div>
+    <div id="Menubar"></div>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.4/css/all.css">
+    <div id="page_top"><a href="#"></a></div>
+    <pre>
+    <code class="prettyprint linenums">
+/*
+最長部分増加列の長さを求める
+LIS(A,true):配列Aの狭義最長部分増加列の長さを返す
+LIS(A,false):配列Aの広義最長部分増加列の長さを返す
+*/
+template &lt;typename T&gt;
+struct segment_tree
+{
+private:
+    using FX = function&lt;T(T, T)&gt;;
+    T n, id; //葉の数、単位元
+    vector&lt;T&gt; data;
+    FX fx, gx; //区間操作, 点更新操作用
+    //[a,b)に対する区間操作　kは[l,r)に対するデータを保持する
+    T sub_query(T a, T b, T k, T l, T r)
+    {
+        if (r &lt;= a || b &lt;= l)
+            return id;
+        if (a &lt;= l &amp;&amp; r &lt;= b)
+            return data[k];
+        T L = sub_query(a, b, 2 * k + 1, l, (l + r) / 2); //左の子
+        T R = sub_query(a, b, 2 * k + 2, (l + r) / 2, r); //右の子
+        return fx(L, R);
+    }
+
+public:
+    segment_tree(T n0, T id0, FX fx0, FX gx0) : n(1), id(id0), fx(fx0), gx(gx0)
+    {
+        while (n &lt; n0)
+            n *= 2;
+        data.resize(2 * n - 1, id); //単位元で初期化
+    }
+    //1点更新クエリの場合はgxを省略できるように
+    segment_tree(T n0, T id0, FX fx0) : segment_tree(n0, id0, fx0, [](T a, T b) { return b; }) {}
+    //配列Aの値で初期化する
+    void build(vector&lt;T&gt; A)
+    {
+        T siz = A.size();
+        for (T i = 0; i &lt; siz; i++)
+            data[i + n - 1] = A[i];
+        for (T i = n - 2; i &gt;= 0; i--)
+            data[i] = fx(data[2 * i + 1], data[2 * i + 2]);
+    }
+    void update(T i, T x)
+    {
+        i += n - 1;
+        data[i] = gx(data[i], x);
+        while (i &gt; 0)
+        {
+            i = (i - 1) / 2;                                //親へ
+            data[i] = fx(data[2 * i + 1], data[2 * i + 2]); //子ノードで更新
+        }
+    }
+    T query(T l, T r) { return sub_query(l, r + 1, 0, 0, n); } //根からスタート
+    //data[x]またはdata.at(x)でアクセスできるように
+    T operator[](T i) { return data[i + n - 1]; }
+    T at(T i) { return data[i + n - 1]; }
+};
+template &lt;typename T&gt;
+void press(vector&lt;T&gt; &amp;A)
+{
+    vector&lt;T&gt; sorted = A;
+    sort(sorted.begin(), sorted.end());
+    auto itr = unique(sorted.begin(), sorted.end());
+    sorted.erase(itr, sorted.end());
+    for (int i = 0; i &lt; A.size(); i++)
+        A[i] = lower_bound(sorted.begin(), sorted.end(), A[i]) - sorted.begin();
+    return;
+}
+//配列Aの最長増加部分列の長さを求める
+template &lt;typename T&gt;
+T LIS(vector&lt;T&gt; A, bool strict)
+{
+    T n = A.size();
+    vector&lt;T&gt; B = A;
+    press(B);
+    auto fx = [](T x, T y) { return max(x, y); };
+    T id = numeric_limits&lt;T&gt;::lowest();
+    segment_tree&lt;T&gt; tree(n + 1, id, fx);
+    vector&lt;T&gt; resiz(n + 1, 0);
+    tree.build(resiz);
+    T ret = 0;
+    for (T i = 0; i &lt; n; i++)
+    {
+        T maxx;
+        if (strict)
+            maxx = tree.query(0, B[i]);
+        else
+            maxx = tree.query(0, B[i] + 1);
+        if (tree[B[i] + 1] &lt; maxx + 1)
+        {
+            tree.update(B[i] + 1, maxx + 1);
+            ret = max(ret, maxx + 1);
+        }
+    }
+    return ret;
+}
+    </code>
+    </pre>
+</body>
+<small>
+    <center>© 2020 kacho65535</center>
+</small>
+
+</html>
