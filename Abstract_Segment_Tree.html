@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>抽象化Segment Tree</title>
+    <link rel="stylesheet" href="code-style.css">
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="option.js"></script>
+    <script src="//code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script>
+        //共通パーツ読み込み
+        $(function () {
+            $("#Menubar").load("Menubar.html");
+        });
+    </script>
+</head>
+
+<body style="background-image: url(back.gif);">
+    <div class="header">
+        <div class="header-logo">kacho65535'spage</div>
+    </div>
+    <div id="Menubar"></div>
+    <div class="contents">
+        <h3>抽象化Segment Tree</h3>
+        <p>このデータ構造の実装には、<a href="https://algo-logic.info/segment-tree/">634kamiさんの解説</a>及び
+            <a href="https://www.creativ.xyz/segment-tree-abstraction-979/">
+                ふるやんさんの解説</a>
+            を大変参考にさせていただきました。</p>
+    </div>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.4/css/all.css">
+    <div id="page_top"><a href="#"></a></div>
+    <pre>
+    <code class="prettyprint linenums">
+/*
+抽象化したセグメント木
+ex)要素数n,long long型,区間最大クエリ(fx),点加算(gx)のセグメント木が欲しい場合
+auto fx=[](long long x,long long y){return max(x,y);};
+auto gx=[](long long a,long long b){return a+b;};
+long long id=numeric_limits&lt;long long&gt;::lowest();//単位元 殆どの場合には十分小さい値でよい
+segment_tree&lt;long long&gt; tree(n,id,fx,gx);で宣言 要素は単位元で初期化される
+
+gcdを区間に作用させるときは単位元を0にするらしい
+gxを点更新とする場合にはgxを省略できる
+以下宣言後できること一覧(0-indexedで考える)
+build(A):長さnの配列Aで要素を初期化する
+update(i,x):i番目の値をxを用いて更新させる(更新,加算など)
+query(l,r):区間[l,r]に対してfxを作用させた結果を返す
+tree[x],tree.at(x):x番目の値を取得する
+*/
+template &lt;typename T&gt;
+struct segment_tree
+{
+private:
+    using FX = function&lt;T(T, T)&gt;;
+    T n, id; //葉の数、単位元
+    vector&lt;T&gt; data;
+    FX fx, gx; //区間操作, 点更新操作用
+    //[a,b)に対する区間操作　kは[l,r)に対するデータを保持する
+    T sub_query(T a, T b, T k, T l, T r)
+    {
+        if (r &lt;= a || b &lt;= l)
+            return id;
+        if (a &lt;= l &amp;&amp; r &lt;= b)
+            return data[k];
+        T L = sub_query(a, b, 2 * k + 1, l, (l + r) / 2); //左の子
+        T R = sub_query(a, b, 2 * k + 2, (l + r) / 2, r); //右の子
+        return fx(L, R);
+    }
+
+public:
+    segment_tree(T n0, T id0, FX fx0, FX gx0) : n(1), id(id0), fx(fx0), gx(gx0)
+    {
+        while (n &lt; n0)
+            n *= 2;
+        data.resize(2 * n - 1, id); //単位元で初期化
+    }
+    //1点更新クエリの場合はgxを省略できるように
+    segment_tree(T n0, T id0, FX fx0)
+    {
+        segment_tree(n0, id0, fx0, [](long long a, long long b) { return b; });
+    }
+    //配列Aの値で初期化する
+    void build(vector&lt;T&gt; A)
+    {
+        T siz = A.size();
+        for (T i = 0; i &lt; siz; i++)
+            data[i + n - 1] = A[i];
+        for (T i = n - 2; i &gt;= 0; i--)
+            data[i] = fx(data[2 * i + 1], data[2 * i + 2]);
+    }
+    void update(T i, T x)
+    {
+        i += n - 1;
+        data[i] = gx(data[i], x);
+        while (i &gt; 0)
+        {
+            i = (i - 1) / 2;                                //親へ
+            data[i] = fx(data[2 * i + 1], data[2 * i + 2]); //子ノードで更新
+        }
+    }
+    T query(T l, T r) { return sub_query(l, r + 1, 0, 0, n); } //根からスタート
+    //data[x]またはdata.at(x)でアクセスできるように
+    T operator[](T i) { return data[i + n - 1]; }
+    T at(T i) { return data[i + n - 1]; }
+};
+    </code>
+    </pre>
+</body>
+<small>
+    <center>© 2020 kacho65535</center>
+</small>
+
+</html>
