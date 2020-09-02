@@ -78,7 +78,7 @@ public:
         data.resize(2 * n - 1, id); //単位元で初期化
     }
     //1点更新クエリの場合はgxを省略できるように
-    segment_tree(T n0, T id0, FX fx0) : segment_tree(n0, id0, fx0, [](long long a, long long b) { return b; }) {}
+    segment_tree(T n0, T id0, FX fx0) : segment_tree(n0, id0, fx0, [](T a, T b) { return b; }) {}
     //配列Aの値で初期化する
     void build(vector&lt;T&gt; A)
     {
