@@ -37,11 +37,12 @@ struct segment_tree
 {
 private:
     using FX = function&lt;T(T, T)&gt;;
-    T n, id; //葉の数、単位元
+    int n;
+    T id;
     vector&lt;T&gt; data;
     FX fx, gx; //区間操作, 点更新操作用
     //[a,b)に対する区間操作　kは[l,r)に対するデータを保持する
-    T sub_query(T a, T b, T k, T l, T r)
+    T sub_query(int a, int b, int k, int l, int r)
     {
         if (r &lt;= a || b &lt;= l)
             return id;
@@ -53,24 +54,24 @@ private:
     }
 
 public:
-    segment_tree(T n0, T id0, FX fx0, FX gx0) : n(1), id(id0), fx(fx0), gx(gx0)
+    segment_tree(int n0, T id0, FX fx0, FX gx0) : n(1), id(id0), fx(fx0), gx(gx0)
     {
         while (n &lt; n0)
             n *= 2;
         data.resize(2 * n - 1, id); //単位元で初期化
     }
     //1点更新クエリの場合はgxを省略できるように
-    segment_tree(T n0, T id0, FX fx0) : segment_tree(n0, id0, fx0, [](T a, T b) { return b; }) {}
+    segment_tree(int n0, T id0, FX fx0) : segment_tree(n0, id0, fx0, [](T a, T b) { return b; }) {}
     //配列Aの値で初期化する
     void build(vector&lt;T&gt; A)
     {
         T siz = A.size();
-        for (T i = 0; i &lt; siz; i++)
+        for (int i = 0; i &lt; siz; i++)
             data[i + n - 1] = A[i];
-        for (T i = n - 2; i &gt;= 0; i--)
+        for (int i = n - 2; i &gt;= 0; i--)
             data[i] = fx(data[2 * i + 1], data[2 * i + 2]);
     }
-    void update(T i, T x)
+    void update(int i, T x)
     {
         i += n - 1;
         data[i] = gx(data[i], x);
@@ -80,10 +81,10 @@ public:
             data[i] = fx(data[2 * i + 1], data[2 * i + 2]); //子ノードで更新
         }
     }
-    T query(T l, T r) { return sub_query(l, r + 1, 0, 0, n); } //根からスタート
+    T query(int l, int r) { return sub_query(l, r + 1, 0, 0, n); } //根からスタート
     //data[x]またはdata.at(x)でアクセスできるように
-    T operator[](T i) { return data[i + n - 1]; }
-    T at(T i) { return data[i + n - 1]; }
+    T operator[](int i) { return data[i + n - 1]; }
+    T at(int i) { return data[i + n - 1]; }
 };
 template &lt;typename T&gt;
 void press(vector&lt;T&gt; &amp;A)
@@ -100,7 +101,7 @@ void press(vector&lt;T&gt; &amp;A)
 template &lt;typename T&gt;
 T LIS(vector&lt;T&gt; A, bool strict)
 {
-    T n = A.size();
+    int n = A.size();
     vector&lt;T&gt; B = A;
     press(B);
     auto fx = [](T x, T y) { return max(x, y); };
@@ -109,7 +110,7 @@ T LIS(vector&lt;T&gt; A, bool strict)
     vector&lt;T&gt; resiz(n + 1, 0);
     tree.build(resiz);
     T ret = 0;
-    for (T i = 0; i &lt; n; i++)
+    for (int i = 0; i &lt; n; i++)
     {
         T maxx;
         if (strict)
