@@ -39,7 +39,7 @@
 ex)要素数n,long long型,区間最大クエリ(fx),点加算(gx)のセグメント木が欲しい場合
 auto fx=[](long long x,long long y){return max(x,y);};
 auto gx=[](long long a,long long b){return a+b;};
-long long id=numeric_limits&lt;long long&gt;::lowest();//単位元 殆どの場合には十分小さい値でよい
+long long id=numeric_limits&lt;long long&gt;::lowest();//単位元 実際の実装では十分小さい値でよい
 segment_tree&lt;long long&gt; tree(n,id,fx,gx);で宣言 要素は単位元で初期化される
 
 gcdを区間に作用させるときは単位元を0にするらしい
@@ -55,11 +55,12 @@ struct segment_tree
 {
 private:
     using FX = function&lt;T(T, T)&gt;;
-    T n, id; //葉の数、単位元
+    int n;
+    T id;
     vector&lt;T&gt; data;
     FX fx, gx; //区間操作, 点更新操作用
     //[a,b)に対する区間操作　kは[l,r)に対するデータを保持する
-    T sub_query(T a, T b, T k, T l, T r)
+    T sub_query(int a, int b, int k, int l, int r)
     {
         if (r &lt;= a || b &lt;= l)
             return id;
@@ -71,24 +72,24 @@ private:
     }
 
 public:
-    segment_tree(T n0, T id0, FX fx0, FX gx0) : n(1), id(id0), fx(fx0), gx(gx0)
+    segment_tree(int n0, T id0, FX fx0, FX gx0) : n(1), id(id0), fx(fx0), gx(gx0)
     {
         while (n &lt; n0)
             n *= 2;
         data.resize(2 * n - 1, id); //単位元で初期化
     }
     //1点更新クエリの場合はgxを省略できるように
-    segment_tree(T n0, T id0, FX fx0) : segment_tree(n0, id0, fx0, [](T a, T b) { return b; }) {}
+    segment_tree(int n0, T id0, FX fx0) : segment_tree(n0, id0, fx0, [](T a, T b) { return b; }) {}
     //配列Aの値で初期化する
     void build(vector&lt;T&gt; A)
     {
         T siz = A.size();
-        for (T i = 0; i &lt; siz; i++)
+        for (int i = 0; i &lt; siz; i++)
             data[i + n - 1] = A[i];
-        for (T i = n - 2; i &gt;= 0; i--)
+        for (int i = n - 2; i &gt;= 0; i--)
             data[i] = fx(data[2 * i + 1], data[2 * i + 2]);
     }
-    void update(T i, T x)
+    void update(int i, T x)
     {
         i += n - 1;
         data[i] = gx(data[i], x);
@@ -98,10 +99,10 @@ public:
             data[i] = fx(data[2 * i + 1], data[2 * i + 2]); //子ノードで更新
         }
     }
-    T query(T l, T r) { return sub_query(l, r + 1, 0, 0, n); } //根からスタート
+    T query(int l, int r) { return sub_query(l, r + 1, 0, 0, n); } //根からスタート
     //data[x]またはdata.at(x)でアクセスできるように
-    T operator[](T i) { return data[i + n - 1]; }
-    T at(T i) { return data[i + n - 1]; }
+    T operator[](int i) { return data[i + n - 1]; }
+    T at(int i) { return data[i + n - 1]; }
 };
     </code>
     </pre>
