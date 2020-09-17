@@ -28,32 +28,34 @@
     <div id="page_top"><a href="#"></a></div>
     <pre>
     <code class="prettyprint linenums">
+template &lt;typename T&gt;
 struct edge
 {
-    long long to;
-    long long cost;
+    int to;
+    T cost;
+    edge(int t, T c) : to(t), cost(c) {}
 };
-typedef pair&lt;long long, long long&gt; P; //P.first:最短距離,P.second:頂点の番号
+#define P pair&lt;T, int&gt; //P.first:最短距離,P.second:頂点の番号
 //頂点V個の負閉路なし重み付きグラフGにおける始点sからの最短距離を求める
-long long V;
-vector&lt;vector&lt;edge&gt;&gt; G;
-void dijkstra(vector&lt;long long&gt; &amp;dist, long long s)
+template &lt;typename T&gt;
+void dijkstra(vector&lt;vector&lt;edge&lt;T&gt;&gt;&gt; G, vector&lt;T&gt; &amp;dist, int s)
 {
+    int V = G.size();
     //greater&lt;P&gt;によってfirstが小さい順に取り出される
     priority_queue&lt;P, vector&lt;P&gt;, greater&lt;P&gt;&gt; que;
-    for (long long i = 0; i &lt; V; i++)
-        dist[i] = 1e18;
-    dist[s] = 0;
-    que.push(P(0, s));
+    for (int i = 0; i &lt; V; i++)
+        dist[i] = numeric_limits&lt;T&gt;::max();
+    dist[s] = (T)0;
+    que.push(P((T)0, s));
     //queが空になるまで繰り返す
     while (!que.empty())
     {
         P p = que.top();
         que.pop();
-        long long v = p.second;
+        int v = p.second;
         if (dist[v] &lt; p.first)
             continue; //すでに最短距離ならスルー
-        for (long long i = 0; i &lt; G[v].size(); i++)
+        for (int i = 0; i &lt; G[v].size(); i++)
         {
             edge e = G[v][i];
             //更新作業
@@ -65,6 +67,7 @@ void dijkstra(vector&lt;long long&gt; &amp;dist, long long s)
         }
     }
 }
+#undef P
     </code>
     </pre>
 </body>
