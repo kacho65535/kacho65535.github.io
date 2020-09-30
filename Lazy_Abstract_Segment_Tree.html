@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>抽象化遅延Segment Tree</title>
+    <link rel="stylesheet" href="code-style.css">
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="option.js"></script>
+    <script src="//code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script>
+        //共通パーツ読み込み
+        $(function () {
+            $("#Menubar").load("Menubar.html");
+        });
+    </script>
+</head>
+
+<body style="background-image: url(back.gif);">
+    <div class="header">
+        <div class="header-logo">kacho65535'spage</div>
+    </div>
+    <div id="Menubar"></div>
+    <div class="contents">
+        <h3>抽象化遅延Segment Tree</h3>
+        <p>このデータ構造の実装には、<a href="https://algo-logic.info/segment-tree/">634kamiさんの解説</a>
+            を大変参考にさせていただきました。</p>
+    </div>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.4/css/all.css">
+    <div id="page_top"><a href="#"></a></div>
+    <pre>
+    <code class="prettyprint linenums">
+template &lt;typename X, typename M&gt;
+struct lazy_segment_tree
+{
+private:
+    using FX = function&lt;X(X, X)&gt;;
+    using FA = function&lt;X(X, M)&gt;;
+    using FM = function&lt;M(M, M)&gt;;
+    int n;
+    FX fx;
+    FA fa;
+    FM fm;
+    const X ex;
+    const M em;
+    vector&lt;X&gt; node;
+    vector&lt;M&gt; lazy;
+    void eval(int k)
+    {
+        if (lazy[k] == em)
+            return;
+        if (k &lt;= (n - 2))
+        {
+            lazy[2 * k + 1] = fm(lazy[2 * k + 1], lazy[k]);
+            lazy[2 * k + 2] = fm(lazy[2 * k + 2], lazy[k]);
+        }
+        node[k] = fa(node[k], lazy[k]);
+        lazy[k] = em;
+    }
+    void _update(int a, int b, M x, int k, int l, int r)
+    {
+        eval(k);
+        if (b &lt;= l || r &lt;= a)
+            return;
+        if (a &lt;= l &amp;&amp; r &lt;= b)
+        {
+            lazy[k] = fm(lazy[k], x);
+            eval(k);
+            return;
+        }
+        _update(a, b, x, 2 * k + 1, l, (l + r) / 2);
+        _update(a, b, x, 2 * k + 2, (l + r) / 2, r);
+        node[k] = fx(node[2 * k + 1], node[2 * k + 2]);
+    }
+    X _query(int a, int b, int k, int l, int r)
+    {
+        eval(k);
+        if (b &lt;= l || r &lt;= a)
+            return ex;
+        if (a &lt;= l &amp;&amp; r &lt;= b)
+            return node[k];
+        X L = _query(a, b, 2 * k + 1, l, (l + r) / 2);
+        X R = _query(a, b, 2 * k + 2, (l + r) / 2, r);
+        return fx(L, R);
+    }
+
+public:
+    lazy_segment_tree(int n0, FX fx0, FA fa0, FM fm0, X ex0, M em0)
+        : n(1), fx(fx0), fa(fa0), fm(fm0), ex(ex0), em(em0)
+    {
+        while (n &lt; n0)
+            n *= 2;
+        node.resize(2 * n - 1, ex);
+        lazy.resize(2 * n - 1, em);
+    }
+    void set(int i, X x) { node[i + (n - 1)] = x; }
+    void build()
+    {
+        for (int i = n - 2; i &gt;= 0; i--)
+            node[i] = fx(node[2 * i + 1], node[2 * i + 2]);
+    }
+    void build(vector&lt;X&gt; A)
+    {
+        int siz = A.size();
+        for (int i = 0; i &lt; siz; i++)
+            set(i, A[i]);
+        for (int i = n - 2; i &gt;= 0; i--)
+            node[i] = fx(node[2 * i + 1], node[2 * i + 2]);
+    }
+    void update(int l, int r, M x) { _update(l, r + 1, x, 0, 0, n); }
+    X query(int l, int r) { return _query(l, r + 1, 0, 0, n); }
+};
+    </code>
+    </pre>
+</body>
+<small>
+    <center>© 2020 kacho65535</center>
+</small>
+
+</html>
