@@ -27,8 +27,6 @@
     <div id="page_top"><a href="#"></a></div>
     <pre>
     <code class="prettyprint linenums">
-//幾何の問題で入力が多い時に使用
-#define scan(x) scanf(&quot;%ld&quot;, &amp;x)
 /*
       [幾何ライブラリ]
       ・円周率
@@ -49,6 +47,7 @@
       ・線分p0p1と点p2の位置関係を求める
       ・2本の線分の交差判定
       ・線分と線分の距離
+      ・交差する2本の直線の交点
       ・交差する2本の線分の交点
       ・座標cを中心とする半径rの円を表わす構造体
       ・円と直線の交点の組(接点なら同じものを2つ)を求める(小さい順に入れる)
@@ -224,6 +223,14 @@ double GetDist(Segment s1, Segment s2)
     if (Intersect(s1, s2))
         return 0.0;
     return min(min(GetDistSP(s1, s2.p1), GetDistSP(s1, s2.p2)), min(GetDistSP(s2, s1.p1), GetDistSP(s2, s1.p2)));
+}
+//交差する2本の直線の交点
+Point CrossPointL(Line s1, Line s2)
+{
+    double a = s1.p1.x, b = s1.p1.y, c = s1.p2.x, d = s1.p2.y;
+    double e = s2.p1.x, f = s2.p1.y, g = s2.p2.x, h = s2.p2.y;
+    Point ret(((f * g - e * h) * (c - a) - (b * c - a * d) * (g - e)) / ((d - b) * (g - e) - (c - a) * (h - f)), ((f * g - e * h) * (d - b) - (b * c - a * d) * (h - f)) / ((d - b) * (g - e) - (c - a) * (h - f)));
+    return ret;
 }
 //交差する2本の線分の交点
 Point CrossPoint(Segment s1, Segment s2)
