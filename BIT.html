@@ -71,7 +71,7 @@ public:
         for (int i = 1; i &lt; n; i++)
             bit[i + (i &amp; -i)] += bit[i];
     }
-    T sum(T l, T r)
+    T sum(int l, int r)
     {
         return sum(r + 1) - sum(l);
     }
