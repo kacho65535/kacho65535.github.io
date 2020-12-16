@@ -23,6 +23,13 @@
         <div class="header-logo">kacho65535'spage</div>
     </div>
     <div id="Menubar"></div>
+    <div class="contents">
+        <h3>重要なお知らせ</h3>
+        <p>
+            このデータ構造のソースコードに致命的なバグがあることが判明しました。
+            Atcoder公式ライブラリなどの信頼できるライブラリを使用してください...
+        </p>
+    </div>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.4/css/all.css">
     <div id="page_top"><a href="#"></a></div>
     <pre>
@@ -42,7 +49,7 @@ struct BIT
 private:
     vector&lt;T&gt; bit;
     T n;
-    T sum(T x)
+    T sum(int x)
     {
         T ret = 0;
         while (x &gt; 0)
@@ -54,8 +61,8 @@ private:
     }
 
 public:
-    BIT(T n0) : bit(n0 + 1, 0), n(n0) {}
-    BIT(T n0, vector&lt;T&gt; &amp;A) : bit(n0 + 1, 0), n(n0)
+    BIT(int n0) : bit(n0 + 1, 0), n(n0) {}
+    BIT(int n0, vector&lt;T&gt; &amp;A) : bit(n0 + 1, 0), n(n0)
     {
         for (int i = 1; i &lt;= n; i++)
             bit[i] = A[i - 1];
@@ -66,13 +73,13 @@ public:
     {
         return sum(r + 1) - sum(l);
     }
-    T at(T x)
+    T at(int x)
     {
         return sum(x, x);
     }
-    void add(T p, T x)
+    void add(int p, T x)
     {
-        T i = p + 1;
+        int i = p + 1;
         while (i &lt;= n)
         {
             bit[i] += x;
